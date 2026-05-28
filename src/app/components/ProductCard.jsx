@@ -71,7 +71,7 @@ function ProductCard({
                   className: "w-full px-6 py-3 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground flex items-center justify-center gap-2 shadow-lg",
                   children: [
                     /* @__PURE__ */ jsx(ShoppingCart, { className: "w-4 h-4" }),
-                    "Add to Cart"
+                    "Добавить в корзину"
                   ]
                 }
               )

@@ -36,23 +36,23 @@ const featuredProducts = [
 const features = [
   {
     icon: Sparkles,
-    title: "Premium Quality",
-    description: "Handcrafted with the finest materials"
+    title: "Премиум-качество",
+    description: "Основано на лучших материалах"
   },
   {
     icon: Heart,
-    title: "Personal Touch",
-    description: "Custom designs for your memories"
+    title: "Личные данные",
+    description: "Мастерские дизайны для ваших воспоминаний"
   },
   {
     icon: Award,
-    title: "Award Winning",
-    description: "Recognized for excellence in design"
+    title: "Награжденные",
+    description: "Оценено за качество дизайна"
   },
   {
     icon: Zap,
-    title: "Fast Delivery",
-    description: "Quick and secure shipping worldwide"
+    title: "Быстрая доставка",
+    description: "Быстрая и безопасная доставка по миру"
   }
 ];
 function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
@@ -93,8 +93,8 @@ function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
           viewport: { once: true },
           className: "text-center space-y-4 mb-12",
           children: [
-            /* @__PURE__ */ jsx("h2", { className: "text-4xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Featured Collection" }) }),
-            /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-2xl mx-auto", children: "Discover our most popular pieces, loved by customers worldwide" })
+            /* @__PURE__ */ jsx("h2", { className: "text-4xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Основная коллекция" }) }),
+            /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-2xl mx-auto", children: "Откройте наши самые популярные произведения, богатые любимыми клиентами по всему миру" })
           ]
         }
       ),
@@ -124,7 +124,7 @@ function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
           whileTap: { scale: 0.98 },
           className: "px-8 py-4 rounded-full border-2 border-primary text-foreground hover:bg-muted transition-colors inline-flex items-center gap-2",
           children: [
-            "View Full Catalog",
+            "Смотреть полный каталог",
             /* @__PURE__ */ jsx(ArrowRight, { className: "w-5 h-5" })
           ]
         }
@@ -139,9 +139,9 @@ function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
           viewport: { once: true },
           className: "space-y-6",
           children: [
-            /* @__PURE__ */ jsx("h2", { className: "text-4xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Create Your Own Lithophany" }) }),
-            /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground", children: "Transform your most cherished memories into stunning illuminated art. Our advanced lithophany technology brings your photos to life with beautiful light and shadow." }),
-            /* @__PURE__ */ jsx("ul", { className: "space-y-3", children: ["Upload any photo", "Choose your preferred shape and size", "Preview in real-time", "Receive handcrafted perfection"].map(
+            /* @__PURE__ */ jsx("h2", { className: "text-4xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Создавайте кы личную литофанию" }) }),
+            /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground", children: "Превратите ваши амидные воспоминания в замечательные световые арты. Наша продвинутая технология литофании приводит ваши фото в жизнь прекрасным светом и тенью." }),
+            /* @__PURE__ */ jsx("ul", { className: "space-y-3", children: ["Загрузить любое фото", "Выберите предпочитаемую форму и размер", "Просмотрите в режиме реального времени", "Получите невероятную ручную работу"].map(
               (item, index) => /* @__PURE__ */ jsxs(
                 motion.li,
                 {
@@ -165,7 +165,7 @@ function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
                 whileTap: { scale: 0.98 },
                 className: "px-8 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground flex items-center gap-2 shadow-lg",
                 children: [
-                  "Start Creating",
+                  "Начать создавать",
                   /* @__PURE__ */ jsx(Sparkles, { className: "w-5 h-5" })
                 ]
               }

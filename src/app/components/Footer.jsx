@@ -19,7 +19,7 @@ function Footer() {
           ),
           /* @__PURE__ */ jsx("span", { className: "font-semibold text-2xl bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "KUN" })
         ] }),
-        /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Creating unique light that turns photographs into art and brings warmth to every home." }),
+        /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Создаваем уникальные световые источники, которые превращают фотографии в искусство и приносят тепло в каждый дом." }),
         /* @__PURE__ */ jsxs("div", { className: "flex gap-4", children: [
           /* @__PURE__ */ jsx(
             motion.a,
@@ -57,31 +57,31 @@ function Footer() {
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
-        /* @__PURE__ */ jsx("h4", { className: "font-semibold", children: "Shop" }),
+        /* @__PURE__ */ jsx("h4", { className: "font-semibold", children: "Магазин" }),
         /* @__PURE__ */ jsxs("nav", { className: "flex flex-col gap-3", children: [
-          /* @__PURE__ */ jsx(Link, { to: "/catalog", className: "text-muted-foreground hover:text-primary transition-colors", children: "All Products" }),
-          /* @__PURE__ */ jsx(Link, { to: "/catalog", className: "text-muted-foreground hover:text-primary transition-colors", children: "Table Lamps" }),
-          /* @__PURE__ */ jsx(Link, { to: "/catalog", className: "text-muted-foreground hover:text-primary transition-colors", children: "Wall Lamps" }),
-          /* @__PURE__ */ jsx(Link, { to: "/catalog", className: "text-muted-foreground hover:text-primary transition-colors", children: "Lithophany" }),
-          /* @__PURE__ */ jsx(Link, { to: "/constructor", className: "text-muted-foreground hover:text-primary transition-colors", children: "Custom Orders" })
+          /* @__PURE__ */ jsx(Link, { to: "/catalog", className: "text-muted-foreground hover:text-primary transition-colors", children: "Все товары" }),
+          /* @__PURE__ */ jsx(Link, { to: "/catalog", className: "text-muted-foreground hover:text-primary transition-colors", children: "Настольные лампы" }),
+          /* @__PURE__ */ jsx(Link, { to: "/catalog", className: "text-muted-foreground hover:text-primary transition-colors", children: "Настенные лампы" }),
+          /* @__PURE__ */ jsx(Link, { to: "/catalog", className: "text-muted-foreground hover:text-primary transition-colors", children: "Литофания" }),
+          /* @__PURE__ */ jsx(Link, { to: "/constructor", className: "text-muted-foreground hover:text-primary transition-colors", children: "Наказы в конструкторе" })
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
-        /* @__PURE__ */ jsx("h4", { className: "font-semibold", children: "Company" }),
+        /* @__PURE__ */ jsx("h4", { className: "font-semibold", children: "Компания" }),
         /* @__PURE__ */ jsxs("nav", { className: "flex flex-col gap-3", children: [
-          /* @__PURE__ */ jsx(Link, { to: "/about", className: "text-muted-foreground hover:text-primary transition-colors", children: "About Us" }),
-          /* @__PURE__ */ jsx(Link, { to: "/reviews", className: "text-muted-foreground hover:text-primary transition-colors", children: "Reviews" }),
-          /* @__PURE__ */ jsx(Link, { to: "/contact", className: "text-muted-foreground hover:text-primary transition-colors", children: "Contact" }),
-          /* @__PURE__ */ jsx("a", { href: "#", className: "text-muted-foreground hover:text-primary transition-colors", children: "Shipping & Returns" }),
-          /* @__PURE__ */ jsx("a", { href: "#", className: "text-muted-foreground hover:text-primary transition-colors", children: "Privacy Policy" })
+          /* @__PURE__ */ jsx(Link, { to: "/about", className: "text-muted-foreground hover:text-primary transition-colors", children: "О нас" }),
+          /* @__PURE__ */ jsx(Link, { to: "/reviews", className: "text-muted-foreground hover:text-primary transition-colors", children: "Отзывы" }),
+          /* @__PURE__ */ jsx(Link, { to: "/contact", className: "text-muted-foreground hover:text-primary transition-colors", children: "Контакты" }),
+          /* @__PURE__ */ jsx("a", { href: "#", className: "text-muted-foreground hover:text-primary transition-colors", children: "Доставка и возвраты" }),
+          /* @__PURE__ */ jsx("a", { href: "#", className: "text-muted-foreground hover:text-primary transition-colors", children: "Политика опривачности" })
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
-        /* @__PURE__ */ jsx("h4", { className: "font-semibold", children: "Contact" }),
+        /* @__PURE__ */ jsx("h4", { className: "font-semibold", children: "Контакты" }),
         /* @__PURE__ */ jsxs("div", { className: "space-y-3 text-muted-foreground", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-3", children: [
             /* @__PURE__ */ jsx(MapPin, { className: "w-5 h-5 mt-0.5 flex-shrink-0" }),
-            /* @__PURE__ */ jsx("p", { children: "123 Light Street, Sunshine City, SC 12345" })
+            /* @__PURE__ */ jsx("p", { children: "Офис: ул. Летэх, 123, г. Летэх, Л-12345" })
           ] }),
           /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
             /* @__PURE__ */ jsx(Mail, { className: "w-5 h-5 flex-shrink-0" }),

@@ -90,8 +90,8 @@ function FavoritesPage({ favorites, onAddToCart, onToggleFavorite }) {
           children: /* @__PURE__ */ jsx(Heart, { className: "w-20 h-20 text-muted-foreground" })
         }
       ),
-      /* @__PURE__ */ jsx("h2", { className: "text-3xl font-bold", children: "No Favorites Yet" }),
-      /* @__PURE__ */ jsx("p", { className: "text-muted-foreground text-center max-w-md", children: "Start adding products to your favorites to keep track of items you love!" }),
+      /* @__PURE__ */ jsx("h2", { className: "text-3xl font-bold", children: "Нет избранных" }),
+      /* @__PURE__ */ jsx("p", { className: "text-muted-foreground text-center max-w-md", children: "Начните добавлять товары в избранные, чтобы отслеживать элементы, которые вам пнравятся!" }),
       /* @__PURE__ */ jsxs(
         motion.a,
         {
@@ -100,7 +100,7 @@ function FavoritesPage({ favorites, onAddToCart, onToggleFavorite }) {
           whileTap: { scale: 0.98 },
           className: "px-8 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground flex items-center gap-2 shadow-lg",
           children: [
-            "Browse Catalog",
+            "Смотреть каталог",
             /* @__PURE__ */ jsx(ArrowRight, { className: "w-5 h-5" })
           ]
         }
@@ -115,12 +115,12 @@ function FavoritesPage({ favorites, onAddToCart, onToggleFavorite }) {
       className: "space-y-8",
       children: [
         /* @__PURE__ */ jsx("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsx("h1", { className: "text-4xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "My Favorites" }) }),
+          /* @__PURE__ */ jsx("h1", { className: "text-4xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Мои избранные" }) }),
           /* @__PURE__ */ jsxs("p", { className: "text-muted-foreground", children: [
             favoriteProducts.length,
             " ",
-            favoriteProducts.length === 1 ? "item" : "items",
-            " saved"
+            favoriteProducts.length === 1 ? "элемент" : "элементы",
+            " сохранены"
           ] })
         ] }) }),
         /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6", children: favoriteProducts.map((product, index) => /* @__PURE__ */ jsx(
