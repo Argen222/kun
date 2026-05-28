@@ -8,7 +8,7 @@ function CatalogPage({ onAddToCart, onToggleFavorite, favorites = [] }) {
   const [selectedCategory, setSelectedCategory] = useState("Все");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/products/")
+    fetch("https://kun-backend-941z.onrender.com/api/products/")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);

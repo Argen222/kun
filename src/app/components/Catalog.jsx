@@ -16,7 +16,7 @@ function CatalogPage({ onAddToCart, onToggleFavorite, favorites }) {
 
   // 2. Django API-ден товарларды тартабыз
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/products/")
+    fetch("https://kun-backend-941z.onrender.com/api/products/")
       .then((res) => res.json())
       .then((data) => {
         // Django'дон келген маалыматты сенин ProductCard күткөндөй форматка ылайыктайбыз
@@ -26,7 +26,7 @@ function CatalogPage({ onAddToCart, onToggleFavorite, favorites }) {
           price: parseFloat(item.price), // бааны сан түрүнө айлантабыз
           rating: 5, // Django'до азырынча рейтинг жок, убактылуу 5 бердик
           reviews: 0, // убактылуу 0 бердик
-          image: item.image, // Django толук даректи берет: http://127.0.0.1:8000/media/...
+          image: item.image, // Django толук даректи берет: https://kun-backend-941z.onrender.com/media/...
           category: item.category_name // "картинка" же сен кошкон категория аты
         }));
         

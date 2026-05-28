@@ -22,7 +22,7 @@ function CartPage({ cart, onRemoveItem, clearCart }) {
                     `Товарлар: ${cartDetails}\n` +
                     `Жалпы сумма: $${total.toFixed(2)}`;
 
-    const phoneNumber = "996708515052"; // Сенин Ватсап номериң
+    const phoneNumber = "996770150025"; // Сенин Ватсап номериң
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
     window.open(url, "_blank");
