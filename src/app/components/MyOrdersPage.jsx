@@ -6,14 +6,14 @@ function MyOrdersPage() {
 
   useEffect(() => {
     // Кадимки заказдар
-    fetch("http://127.0.0.1:8000/api/my-orders/", {
+    fetch("https://kun-backend-qxcn.onrender.com/api/my-orders/", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("access_token")}` }
     })
       .then(res => res.json())
       .then(data => Array.isArray(data) ? setOrders(data) : setOrders([]));
 
     // Индивидуалдык заказдар (Custom Orders)
-    fetch("http://127.0.0.1:8000/api/custom-orders/") // Бул жерге эгер керек болсо да токен кош
+    fetch("https://kun-backend-qxcn.onrender.com/api/custom-orders/") // Бул жерге эгер керек болсо да токен кош
       .then(res => res.json())
       .then(data => Array.isArray(data) ? setCustomOrders(data) : setCustomOrders([]));
   }, []);

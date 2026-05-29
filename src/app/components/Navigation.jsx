@@ -15,7 +15,7 @@ function Navigation({ cartCount, favoritesCount, theme, onThemeToggle }) {
     { name: "Отзывы", path: "/reviews" },
     { name: "Контакты", path: "/contact" },
     // Navigation.jsx файлында navItems массивине кош:
-{ name: "Менин заказдарым", path: "/my-orders" },
+// { name: "Менин заказдарым", path: "/my-orders" },
   ];
   return /* @__PURE__ */ jsxs("nav", { className: "fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-background/80 border-b border-border", children: [
     /* @__PURE__ */ jsx("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between h-20", children: [

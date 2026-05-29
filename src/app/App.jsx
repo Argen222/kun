@@ -45,7 +45,7 @@ function App() {
       document.documentElement.classList.toggle("dark", savedTheme === "dark");
     }
 
-    fetch("https://kun-backend-941z.onrender.com/api/products/")
+    fetch("https://kun-backend-qxcn.onrender.com/api/products/")
       .then((res) => res.json())
       .then((data) => {
         const productsMap = {};
