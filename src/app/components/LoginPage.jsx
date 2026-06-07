@@ -8,7 +8,7 @@ function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const res = await fetch("https://kun-unop.onrender.com/api/auth/login", {
+    const res = await fetch("https://kun-backend1.onrender.com/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
