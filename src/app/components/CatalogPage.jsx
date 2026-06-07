@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Heart, ShoppingCart, X, Star, Package } from "lucide-react";
 
-const API = "https://kun-unop.onrender.com/api";
+const API = "https://kun-backend1.onrender.com/api";
 
 function ProductModal({ product, onClose, onAddToCart, onToggleFavorite, isFavorite }) {
   if (!product) return null;

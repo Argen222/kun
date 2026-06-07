@@ -66,7 +66,7 @@ function LithophanyConstructor() {
     formData.append("size", selectedSize);
 
     try {
-      const response = await fetch("https://kun-unop.onrender.com/api/custom-orders/", { method: "POST", body: formData });
+      const response = await fetch("https://kun-backend1.onrender.com/api/custom-orders/", { method: "POST", body: formData });
 
       if (response.ok) {
         // 2. Ватсапка билдирүү жөнөтүү

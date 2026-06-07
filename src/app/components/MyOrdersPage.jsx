@@ -6,14 +6,14 @@ function MyOrdersPage() {
 
   useEffect(() => {
     // Кадимки заказдар
-    fetch("https://kun-unop.onrender.com/api/my-orders/", {
+    fetch("https://kun-backend1.onrender.com/api/my-orders/", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("access_token")}` }
     })
       .then(res => res.json())
       .then(data => Array.isArray(data) ? setOrders(data) : setOrders([]));
 
     // Индивидуалдык заказдар (Custom Orders)
-    fetch("https://kun-unop.onrender.com/api/custom-orders/", {
+    fetch("https://kun-backend1.onrender.com/api/custom-orders/", {
       headers: { "Authorization": `Bearer ${localStorage.getItem("access_token")}` }
     })
       .then(res => res.json())

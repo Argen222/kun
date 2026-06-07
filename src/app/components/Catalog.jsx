@@ -16,7 +16,7 @@ function CatalogPage({ onAddToCart, onToggleFavorite, favorites }) {
 
   // 2. Django API-ден товарларды тартабыз
   useEffect(() => {
-    fetch("https://kun-unop.onrender.com/api/products/")
+    fetch("https://kun-backend1.onrender.com/api/products/")
       .then((res) => res.json())
       .then((data) => {
         // Django'дон келген маалыматты сенин ProductCard күткөндөй форматка ылайыктайбыз
