@@ -16,7 +16,7 @@ import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 import AdminPage from "../pages/AdminPage";
 
-const API = "http://localhost:8000/api";
+const API = "https://kun-unop.onrender.com/api";
 
 const productData = {
   "old-1": { name: "Golden Sunset Table Lamp", price: 149, image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800", category: "Table Lamps" },
