@@ -48,7 +48,7 @@ function ReviewsPage() {
     formData.append("image", reviewImage);
 
     try {
-      const response = await fetch("https://kun-backend-qxcn.onrender.com/api/reviews/", {
+      const response = await fetch("http://localhost:8000/api/reviews/", {
         method: "POST",
         body: formData,
       });
