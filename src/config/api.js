@@ -1,6 +1,6 @@
 // API Configuration for Frontend
 
-export const API_BASE_URL_DEV = 'http://localhost:8000/api';
+export const API_BASE_URL_DEV = 'https://kun-backend1.onrender.com/api';
 export const API_BASE_URL_PROD = 'https://kun-backend1.onrender.com/api';
 
 // Локалдык иштетүү үчүн — deploy кылганда 'production' га өзгөртүңүз

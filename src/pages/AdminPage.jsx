@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Trash2, Plus, Package, Tag } from "lucide-react";
 
-const API = "http://localhost:8000/api";
+const API = "https://kun-backend1.onrender.com/api";
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState("products"); // "products" | "categories"
