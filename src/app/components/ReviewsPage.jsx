@@ -1,26 +1,41 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Star, Camera, X, MessageSquare, Heart } from "lucide-react";
+import { Star, Camera, X, MessageSquare, Heart, Trash2 } from "lucide-react";
 
 const API = "https://kun-backend1.onrender.com/api";
 
-function ReviewCard({ review, index }) {
+// ── Бир пикирдин карточкасы ──────────────────────────────────
+function ReviewCard({ review, index, isAdmin, onDelete }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+      className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 relative"
     >
+      {/* Админ болсо — өчүрүү баскычы чыгат */}
+      {isAdmin && (
+        <button
+          onClick={() => onDelete(review.id)}
+          className="absolute top-3 right-3 z-10 p-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md transition"
+          title="Өчүрүү"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      )}
+
+      {/* Сүрөт */}
       {review.image_url && (
         <div className="aspect-video overflow-hidden">
           <img
             src={review.image_url}
-            alt="Отзыв сүрөтү"
+            alt="Пикир сүрөтү"
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
         </div>
       )}
+
+      {/* Маалымат */}
       <div className="p-5 space-y-3">
         <div className="flex items-center gap-1">
           {[...Array(5)].map((_, i) => (
@@ -40,6 +55,7 @@ function ReviewCard({ review, index }) {
   );
 }
 
+// ── Негизги бет ──────────────────────────────────────────────
 function ReviewsPage() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,10 +67,15 @@ function ReviewsPage() {
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
 
+  // Токен барда — admin деп эсептейбиз
+  const token = localStorage.getItem("access_token");
+  const isAdmin = !!token;
+
   useEffect(() => {
     fetchReviews();
   }, []);
 
+  // Пикирлерди backend'ден алуу
   const fetchReviews = async () => {
     try {
       const res = await fetch(`${API}/reviews`);
@@ -67,6 +88,7 @@ function ReviewsPage() {
     }
   };
 
+  // Сүрөт тандоо
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -80,12 +102,12 @@ function ReviewsPage() {
     setPreviewUrl(null);
   };
 
+  // Пикир жөнөтүү
   const handleSendReview = async () => {
     if (!comment.trim()) {
       alert("Сураныч, пикириңизди жазыңыз!");
       return;
     }
-
     setSending(true);
     const formData = new FormData();
     formData.append("comment", comment);
@@ -96,7 +118,6 @@ function ReviewsPage() {
         method: "POST",
         body: formData,
       });
-
       if (res.ok) {
         setComment("");
         clearImage();
@@ -111,6 +132,24 @@ function ReviewsPage() {
       alert("Сервер менен байланышуу мүмкүн эмес.");
     } finally {
       setSending(false);
+    }
+  };
+
+  // Пикир өчүрүү (Админ гана)
+  const handleDeleteReview = async (id) => {
+    if (!confirm("Бул пикирди өчүрөсүзбү?")) return;
+    try {
+      const res = await fetch(`${API}/reviews/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        fetchReviews();
+      } else {
+        alert("Өчүрүүдө ката кетти!");
+      }
+    } catch {
+      alert("Сервер менен байланышуу мүмкүн эмес.");
     }
   };
 
@@ -274,7 +313,7 @@ function ReviewsPage() {
           )}
         </AnimatePresence>
 
-        {/* Отзывдар тизмеси */}
+        {/* Пикирлер тизмеси */}
         {loading ? (
           <div className="text-center py-20">
             <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
@@ -289,7 +328,13 @@ function ReviewsPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {reviews.map((review, index) => (
-              <ReviewCard key={review.id} review={review} index={index} />
+              <ReviewCard
+                key={review.id}
+                review={review}
+                index={index}
+                isAdmin={isAdmin}
+                onDelete={handleDeleteReview}
+              />
             ))}
           </div>
         )}
