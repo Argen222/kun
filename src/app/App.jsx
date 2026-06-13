@@ -15,7 +15,7 @@ import RegisterPage from "./components/RegisterPage";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 import AdminPage from "../pages/AdminPage";
-
+ 
 const API = "https://kun-backend1.onrender.com/api";
 
 const productData = {
