@@ -19,14 +19,14 @@ import AdminPage from "../pages/AdminPage";
 const API = "https://kun-backend1.onrender.com/api";
 
 const productData = {
-  "old-1": { name: "Golden Sunset Table Lamp", price: 149, image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800", category: "Table Lamps" },
-  "old-2": { name: "Warm Glow Wall Sconce", price: 189, image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800", category: "Wall Lamps" },
-  "old-3": { name: "Memory Lithophany Portrait", price: 299, image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800", category: "Lithophany" },
-  "old-4": { name: "Amber Elegance Desk Lamp", price: 169, image: "https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=800", category: "Table Lamps" },
-  "old-5": { name: "Moonlight Wall Fixture", price: 219, image: "https://images.unsplash.com/photo-1543198126-a8c82d6d9b99?w=800", category: "Wall Lamps" },
-  "old-6": { name: "Custom Family Lithophany", price: 349, image: "https://images.unsplash.com/photo-1534670007418-fbb7f6cf32c3?w=800", category: "Custom Work" },
-  "old-7": { name: "Sunset Glow Reading Lamp", price: 129, image: "https://images.unsplash.com/photo-1567225591450-74a715f3d0de?w=800", category: "Table Lamps" },
-  "old-8": { name: "Radiant Memory Cube", price: 279, image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800", category: "Lithophany" },
+  "old-1": { name: "Алтын Күн баткандагы стол чырагы", price: 149, image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800", category: "Стол чырактары" },
+  "old-2": { name: "Жылуу жарык берүүчү дубал чырагы", price: 189, image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800", category: "Дубал чырактары" },
+  "old-3": { name: "Эстелик Литофания портрети", price: 299, image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800", category: "Литофания" },
+  "old-4": { name: "Янтарь түсүндөгү жумушчу стол чырагы", price: 169, image: "https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=800", category: "Стол чырактары" },
+  "old-5": { name: "Ай нуру сыяктуу дубал чырагы", price: 219, image: "https://images.unsplash.com/photo-1543198126-a8c82d6d9b99?w=800", category: "Дубал чырактары" },
+  "old-6": { name: "Жеке үй-бүлөлүк Литофания", price: 349, image: "https://images.unsplash.com/photo-1534670007418-fbb7f6cf32c3?w=800", category: "Жеке буйрутма" },
+  "old-7": { name: "Күн баткандагы окуу чырагы", price: 129, image: "https://images.unsplash.com/photo-1567225591450-74a715f3d0de?w=800", category: "Стол чырактары" },
+  "old-8": { name: "Жарык берүүчү эстелик кубу", price: 279, image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800", category: "Литофания" },
 };
 
 function App() {
@@ -47,7 +47,7 @@ function App() {
       document.documentElement.classList.toggle("dark", savedTheme === "dark");
     }
 
-    // ✅ Слэшсиз жана image_url туура
+    // ✅ Дарек жана сүрөт шилтемелери туураланды
     fetch(`${API}/products`)
       .then((res) => res.json())
       .then((data) => {
@@ -63,7 +63,7 @@ function App() {
         });
         setDjangoProducts(productsMap);
       })
-      .catch((err) => console.error("Товарларды жүктөөдө ката:", err));
+      .catch((err) => console.error("Товарларды жүктөөдө ката кетти:", err));
   }, []);
 
   const handleThemeToggle = () => {

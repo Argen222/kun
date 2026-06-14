@@ -1,28 +1,30 @@
 import { jsx, jsxs } from "react/jsx-runtime";
 import { motion } from "motion/react";
 import { Sparkles, Heart, Award, Users } from "lucide-react";
+
 const features = [
   {
     icon: Sparkles,
-    title: "Handcrafted Quality",
-    description: "Each piece is meticulously crafted by skilled artisans with attention to every detail"
+    title: "Кол өнөрчүлүк сапаты",
+    description: "Ар бир буюм чеберлер тарабынан ар бир майда-чүйдөсүнө чейин кылдаттык менен жасалат"
   },
   {
     icon: Heart,
-    title: "Personal Touch",
-    description: "Transform your cherished memories into illuminated art that tells your story"
+    title: "Жеке мамиле",
+    description: "Сиздин баалуу эстеликтериңизди окуяңызды баяндаган жаркыраган искусствого айландырабыз"
   },
   {
     icon: Award,
-    title: "Premium Materials",
-    description: "We use only the finest materials to ensure longevity and beauty"
+    title: "Премиум материалдар",
+    description: "Биз узак мөөнөттүү сапатты жана сулуулукту камсыз кылуу үчүн эң мыкты материалдарды колдонобуз"
   },
   {
     icon: Users,
-    title: "Customer First",
-    description: "Dedicated support and personalized service for every order"
+    title: "Кардар биринчи орунда",
+    description: "Ар бир буйрутма үчүн атайын колдоо жана жекече тейлөө кызматы"
   }
 ];
+
 function AboutPage() {
   return /* @__PURE__ */ jsx("div", { className: "min-h-screen pt-32 pb-20", children: /* @__PURE__ */ jsx("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxs(
     motion.div,
@@ -32,8 +34,8 @@ function AboutPage() {
       className: "space-y-20",
       children: [
         /* @__PURE__ */ jsxs("div", { className: "text-center space-y-6 max-w-3xl mx-auto", children: [
-          /* @__PURE__ */ jsx("h1", { className: "text-4xl sm:text-5xl lg:text-6xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "About KUN" }) }),
-          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground leading-relaxed", children: "KUN creates a unique light and turns photographs into art. We believe that every memory deserves to be illuminated, and every space deserves the warmth of thoughtfully crafted lighting." })
+          /* @__PURE__ */ jsx("h1", { className: "text-4xl sm:text-5xl lg:text-6xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "KUN жөнүндө" }) }),
+          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground leading-relaxed", children: "KUN жарыктын уникалдуу түрүн жаратат жана сүрөттөрдү искусствого айландырат. Биз ар бир эстелик жаркырап турууга татыктуу жана ар бир мейкиндик кылдат жасалган жарыктын жылуулугуна муктаж деп ишенебиз." })
         ] }),
         /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-12 items-center", children: [
           /* @__PURE__ */ jsxs(
@@ -45,11 +47,11 @@ function AboutPage() {
               transition: { duration: 0.6 },
               className: "space-y-6",
               children: [
-                /* @__PURE__ */ jsx("h2", { className: "text-3xl font-bold", children: "Our Story" }),
+                /* @__PURE__ */ jsx("h2", { className: "text-3xl font-bold", children: "Биздин тарых" }),
                 /* @__PURE__ */ jsxs("div", { className: "space-y-4 text-muted-foreground leading-relaxed", children: [
-                  /* @__PURE__ */ jsx("p", { children: "Founded with a passion for light and memory, KUN was born from the idea that lighting should do more than just illuminate\u2014it should inspire, comfort, and preserve our most precious moments." }),
-                  /* @__PURE__ */ jsx("p", { children: "Our name, KUN, is associated with the sun, warmth, light, and comfort. Just as the sun brings life and energy, our creations bring warmth and personality to every space they inhabit." }),
-                  /* @__PURE__ */ jsx("p", { children: "Each piece in our collection is handcrafted with meticulous attention to detail, using premium materials and innovative techniques. Our lithophany technology transforms your photographs into three-dimensional art that comes alive when illuminated." })
+                  /* @__PURE__ */ jsx("p", { children: "Жарыкка жана эстеликтерге болгон сүйүү менен негизделген KUN, жарыктандыруу жөн гана жарык бербестен, адамды шыктандырып, сооротуп жана эң баалуу көз ирмемдерди сактап калышы керек деген идеядан жаралган." }),
+                  /* @__PURE__ */ jsx("p", { children: "Биздин KUN аталышыбыз күн, жылуулук, жарык жана жайлуулук менен байланыштуу. Күн кантип жашоо жана энергия берсе, биздин буюмдарыбыз да өзү турган ар бир мейкиндикке жылуулук жана өзгөчөлүк тартуулайт." }),
+                  /* @__PURE__ */ jsx("p", { children: "Биздин коллекциядагы ар бир буюм кылдаттык менен колго жасалып, премиум материалдар жана инновациялык технологиялар колдонулат. Литофания технологиябыз сүрөттөрүңүздү жарыктанганда жандана турган үч өлчөмдүү искусствого айландырат." })
                 ] })
               ]
             }
@@ -114,8 +116,8 @@ function AboutPage() {
           );
         }) }),
         /* @__PURE__ */ jsxs("div", { className: "bg-gradient-to-br from-primary/10 via-accent/10 to-primary/10 rounded-3xl p-8 md:p-12 text-center space-y-6", children: [
-          /* @__PURE__ */ jsx("h2", { className: "text-3xl font-bold", children: "Our Mission" }),
-          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed", children: "To bring warmth, beauty, and personalization to every home through expertly crafted lighting and lithophany. We're committed to preserving your most treasured memories in a form that can be enjoyed every day, creating an atmosphere of comfort and nostalgia that lasts a lifetime." })
+          /* @__PURE__ */ jsx("h2", { className: "text-3xl font-bold", children: "Биздин миссия" }),
+          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed", children: "Жарыктандыруу жана литофания аркылуу ар бир үйгө жылуулук, сулуулук жана жекечелик алып келүү. Биз сиздин эң баалуу эстеликтериңизди күн сайын ырахаттана турган формада сактап калууга, өмүр бою сакталып кала турган жайлуулук жана ностальгия атмосферасын түзүүгө милдеттүүбүз." })
         ] })
       ]
     }

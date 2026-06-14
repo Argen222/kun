@@ -95,8 +95,8 @@ function Footer() {
       ] })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "mt-12 pt-8 border-t border-border", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground", children: [
-      /* @__PURE__ */ jsx("p", { children: "\xA9 2026 KUN. All rights reserved." }),
-      /* @__PURE__ */ jsx("p", { children: "Handcrafted with \u2764\uFE0F for bringing light to memories" })
+      /* @__PURE__ */ jsx("p", { children: "\xA9 2026 KUN. Argen and Iskhak." }),
+      /* @__PURE__ */ jsx("p", { children: "Эстеликтериңизге жан киргизебиз — сүйүү менен жасалган ❤️" })
     ] }) })
   ] }) });
 }

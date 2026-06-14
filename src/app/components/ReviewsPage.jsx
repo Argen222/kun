@@ -4,7 +4,6 @@ import { Star, Camera, X, MessageSquare, Heart, Trash2 } from "lucide-react";
 
 const API = "https://kun-backend1.onrender.com/api";
 
-// ── Бир пикирдин карточкасы ──────────────────────────────────
 function ReviewCard({ review, index, isAdmin, onDelete }) {
   return (
     <motion.div
@@ -13,7 +12,7 @@ function ReviewCard({ review, index, isAdmin, onDelete }) {
       transition={{ delay: index * 0.1 }}
       className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 relative"
     >
-      {/* Админ болсо — өчүрүү баскычы чыгат */}
+      {/* Admin өчүрүү баскычы — токен барда гана көрүнөт */}
       {isAdmin && (
         <button
           onClick={() => onDelete(review.id)}
@@ -24,18 +23,16 @@ function ReviewCard({ review, index, isAdmin, onDelete }) {
         </button>
       )}
 
-      {/* Сүрөт */}
       {review.image_url && (
         <div className="aspect-video overflow-hidden">
           <img
             src={review.image_url}
-            alt="Пикир сүрөтү"
+            alt="Отзыв сүрөтү"
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
         </div>
       )}
 
-      {/* Маалымат */}
       <div className="p-5 space-y-3">
         <div className="flex items-center gap-1">
           {[...Array(5)].map((_, i) => (
@@ -55,7 +52,6 @@ function ReviewCard({ review, index, isAdmin, onDelete }) {
   );
 }
 
-// ── Негизги бет ──────────────────────────────────────────────
 function ReviewsPage() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,7 +63,7 @@ function ReviewsPage() {
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
 
-  // Токен барда — admin деп эсептейбиз
+  // Admin текшерүү — localStorage'да токен бар болсо admin
   const token = localStorage.getItem("access_token");
   const isAdmin = !!token;
 
@@ -75,7 +71,6 @@ function ReviewsPage() {
     fetchReviews();
   }, []);
 
-  // Пикирлерди backend'ден алуу
   const fetchReviews = async () => {
     try {
       const res = await fetch(`${API}/reviews`);
@@ -88,7 +83,6 @@ function ReviewsPage() {
     }
   };
 
-  // Сүрөт тандоо
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -102,12 +96,12 @@ function ReviewsPage() {
     setPreviewUrl(null);
   };
 
-  // Пикир жөнөтүү
   const handleSendReview = async () => {
     if (!comment.trim()) {
       alert("Сураныч, пикириңизди жазыңыз!");
       return;
     }
+
     setSending(true);
     const formData = new FormData();
     formData.append("comment", comment);
@@ -118,6 +112,7 @@ function ReviewsPage() {
         method: "POST",
         body: formData,
       });
+
       if (res.ok) {
         setComment("");
         clearImage();
@@ -135,15 +130,15 @@ function ReviewsPage() {
     }
   };
 
-  // Пикир өчүрүү (Админ гана)
+  // Отзыв өчүрүү — admin гана
   const handleDeleteReview = async (id) => {
-    if (!confirm("Бул пикирди өчүрөсүзбү?")) return;
+    if (!confirm("Пикирди өчүрөсүзбү?")) return;
     try {
       const res = await fetch(`${API}/reviews/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.ok) {
+      if (res.ok || res.status === 204) {
         fetchReviews();
       } else {
         alert("Өчүрүүдө ката кетти!");
@@ -313,7 +308,7 @@ function ReviewsPage() {
           )}
         </AnimatePresence>
 
-        {/* Пикирлер тизмеси */}
+        {/* Отзывдар тизмеси */}
         {loading ? (
           <div className="text-center py-20">
             <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />

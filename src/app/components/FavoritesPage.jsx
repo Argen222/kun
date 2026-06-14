@@ -2,82 +2,85 @@ import { jsx, jsxs } from "react/jsx-runtime";
 import { motion } from "motion/react";
 import { Heart, ArrowRight } from "lucide-react";
 import { ProductCard } from "./ProductCard";
+
 const allProducts = [
   {
     id: "1",
-    name: "Golden Sunset Table Lamp",
+    name: "Алтын Күн баткандагы стол чырагы",
     price: 149,
     rating: 4.8,
     reviews: 124,
     image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800",
-    category: "Table Lamps"
+    category: "Стол чырактары"
   },
   {
     id: "2",
-    name: "Warm Glow Wall Sconce",
+    name: "Жылуу жарык берүүчү дубал чырагы",
     price: 189,
     rating: 4.9,
     reviews: 98,
     image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800",
-    category: "Wall Lamps"
+    category: "Дубал чырактары"
   },
   {
     id: "3",
-    name: "Memory Lithophany Portrait",
+    name: "Эстелик Литофания портрети",
     price: 299,
     rating: 5,
     reviews: 156,
     image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800",
-    category: "Lithophany"
+    category: "Литофания"
   },
   {
     id: "4",
-    name: "Amber Elegance Desk Lamp",
+    name: "Янтарь түсүндөгү жумушчу стол чырагы",
     price: 169,
     rating: 4.7,
     reviews: 87,
     image: "https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=800",
-    category: "Table Lamps"
+    category: "Стол чырактары"
   },
   {
     id: "5",
-    name: "Moonlight Wall Fixture",
+    name: "Ай нуру сыяктуу дубал чырагы",
     price: 219,
     rating: 4.8,
     reviews: 112,
     image: "https://images.unsplash.com/photo-1543198126-a8c82d6d9b99?w=800",
-    category: "Wall Lamps"
+    category: "Дубал чырактары"
   },
   {
     id: "6",
-    name: "Custom Family Lithophany",
+    name: "Жеке үй-бүлөлүк Литофания",
     price: 349,
     rating: 5,
     reviews: 203,
     image: "https://images.unsplash.com/photo-1534670007418-fbb7f6cf32c3?w=800",
-    category: "Custom Work"
+    category: "Жеке буйрутма"
   },
   {
     id: "7",
-    name: "Sunset Glow Reading Lamp",
+    name: "Күн баткандагы окуу чырагы",
     price: 129,
     rating: 4.6,
     reviews: 76,
     image: "https://images.unsplash.com/photo-1567225591450-74a715f3d0de?w=800",
-    category: "Table Lamps"
+    category: "Стол чырактары"
   },
   {
     id: "8",
-    name: "Radiant Memory Cube",
+    name: "Жарык берүүчү эстелик кубу",
     price: 279,
     rating: 4.9,
     reviews: 145,
     image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800",
-    category: "Lithophany"
+    category: "Литофания"
   }
 ];
+
 function FavoritesPage({ favorites, onAddToCart, onToggleFavorite }) {
   const favoriteProducts = allProducts.filter((product) => favorites.includes(product.id));
+  
   if (favoriteProducts.length === 0) {
     return /* @__PURE__ */ jsx("div", { className: "min-h-screen pt-32 pb-20", children: /* @__PURE__ */ jsx("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center justify-center py-20 space-y-6", children: [
       /* @__PURE__ */ jsx(
@@ -90,8 +93,8 @@ function FavoritesPage({ favorites, onAddToCart, onToggleFavorite }) {
           children: /* @__PURE__ */ jsx(Heart, { className: "w-20 h-20 text-muted-foreground" })
         }
       ),
-      /* @__PURE__ */ jsx("h2", { className: "text-3xl font-bold", children: "Нет избранных" }),
-      /* @__PURE__ */ jsx("p", { className: "text-muted-foreground text-center max-w-md", children: "Начните добавлять товары в избранные, чтобы отслеживать элементы, которые вам пнравятся!" }),
+      /* @__PURE__ */ jsx("h2", { className: "text-3xl font-bold", children: "Тандалган товарлар жок" }),
+      /* @__PURE__ */ jsx("p", { className: "text-muted-foreground text-center max-w-md", children: "Сизге жаккан товарларды сактап калуу үчүн аларды тандалганга кошуп баштаңыз!" }),
       /* @__PURE__ */ jsxs(
         motion.a,
         {
@@ -100,13 +103,14 @@ function FavoritesPage({ favorites, onAddToCart, onToggleFavorite }) {
           whileTap: { scale: 0.98 },
           className: "px-8 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground flex items-center gap-2 shadow-lg",
           children: [
-            "Смотреть каталог",
+            "Каталогду көрүү",
             /* @__PURE__ */ jsx(ArrowRight, { className: "w-5 h-5" })
           ]
         }
       )
     ] }) }) });
   }
+
   return /* @__PURE__ */ jsx("div", { className: "min-h-screen pt-32 pb-20", children: /* @__PURE__ */ jsx("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxs(
     motion.div,
     {
@@ -115,12 +119,11 @@ function FavoritesPage({ favorites, onAddToCart, onToggleFavorite }) {
       className: "space-y-8",
       children: [
         /* @__PURE__ */ jsx("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
-          /* @__PURE__ */ jsx("h1", { className: "text-4xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Мои избранные" }) }),
+          /* @__PURE__ */ jsx("h1", { className: "text-4xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Тандалган товарларым" }) }),
           /* @__PURE__ */ jsxs("p", { className: "text-muted-foreground", children: [
             favoriteProducts.length,
             " ",
-            favoriteProducts.length === 1 ? "элемент" : "элементы",
-            " сохранены"
+            "товар сакталды"
           ] })
         ] }) }),
         /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6", children: favoriteProducts.map((product, index) => /* @__PURE__ */ jsx(
@@ -145,6 +148,7 @@ function FavoritesPage({ favorites, onAddToCart, onToggleFavorite }) {
     }
   ) }) });
 }
+
 export {
   FavoritesPage
 };
