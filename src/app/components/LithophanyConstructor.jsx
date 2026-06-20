@@ -1,14 +1,16 @@
 import { jsx, jsxs } from "react/jsx-runtime";
-import { useState, useEffect, useRef } from "react";
-import { motion, useMotionValue, useTransform } from "motion/react";
-import { Upload, Square, Circle, Heart, Star, ShoppingCart, Sparkles } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { motion } from "motion/react";
+import { Upload, Square, Circle, Heart, Star, ShoppingCart } from "lucide-react";
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // Фигуралар
 const shapes = [
   { id: "square", name: "Квадрат", icon: Square },
-  { id: "circle", name: "Круг", icon: Circle },
-  { id: "heart", name: "Сердце", icon: Heart },
-  { id: "star", name: "Звезда", icon: Star }
+  { id: "circle", name: "Тегерек", icon: Circle },
+  { id: "heart", name: "Жүрөк", icon: Heart },
+  { id: "star", name: "Жылдыз", icon: Star }
 ];
 
 // Өлчөмдөр
@@ -28,14 +30,186 @@ function LithophanyConstructor() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
-  const [isHovering, setIsHovering] = useState(false);
+  
+  // Three.js референстери
+  const containerRef = useRef(null);
+  const sceneRef = useRef(null);
+  const cameraRef = useRef(null);
+  const rendererRef = useRef(null);
+  const meshRef = useRef(null);
+  const controlsRef = useRef(null);
+  const animationIdRef = useRef(null);
 
-  // 3D айлануу үчүн
-  const rotateX = useMotionValue(0);
-  const rotateY = useMotionValue(0);
-  const scale = useMotionValue(1);
+  // Three.js сценасын түзүү
+  useEffect(() => {
+    if (!containerRef.current) return;
 
-  // Сүрөттү жүктөө
+    // Сцена
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf8f4f0);
+    sceneRef.current = scene;
+
+    // Камера
+    const camera = new THREE.PerspectiveCamera(45, containerRef.current.clientWidth / containerRef.current.clientHeight, 0.1, 100);
+    camera.position.set(4, 3, 6);
+    camera.lookAt(0, 0, 0);
+    cameraRef.current = camera;
+
+    // Рендерер
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    containerRef.current.appendChild(renderer.domElement);
+    rendererRef.current = renderer;
+
+    // Орбиталык башкаруу
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 2.0;
+    controls.minDistance = 3;
+    controls.maxDistance = 15;
+    controlsRef.current = controls;
+
+    // Жарыктар
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    mainLight.position.set(5, 10, 7);
+    mainLight.castShadow = true;
+    scene.add(mainLight);
+
+    const fillLight = new THREE.DirectionalLight(0xffeedd, 0.5);
+    fillLight.position.set(-5, 0, 5);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    rimLight.position.set(0, -5, -5);
+    scene.add(rimLight);
+
+    // Пьедестал (кооздоп коюу үчүн)
+    const planeGeometry = new THREE.CircleGeometry(3.5, 32);
+    const planeMaterial = new THREE.MeshStandardMaterial({
+      color: 0xe8e0d8,
+      roughness: 0.7,
+      metalness: 0.1,
+      transparent: true,
+      opacity: 0.5,
+      side: THREE.DoubleSide
+    });
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -Math.PI / 2;
+    plane.position.y = -0.5;
+    plane.receiveShadow = true;
+    scene.add(plane);
+
+    // Анимация циклы
+    const animate = () => {
+      animationIdRef.current = requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    // Терезе өлчөмүн өзгөртүү
+    const handleResize = () => {
+      if (!containerRef.current) return;
+      const width = containerRef.current.clientWidth;
+      const height = containerRef.current.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Тазалоо
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (animationIdRef.current) cancelAnimationFrame(animationIdRef.current);
+      if (rendererRef.current && containerRef.current) {
+        containerRef.current.removeChild(rendererRef.current.domElement);
+      }
+      rendererRef.current?.dispose();
+    };
+  }, []);
+
+  // Сүрөт жүктөлгөндө 3D модель түзүү
+  useEffect(() => {
+    if (!uploadedImage || !sceneRef.current) return;
+
+    // Эски модельди өчүрүү
+    if (meshRef.current) {
+      sceneRef.current.remove(meshRef.current);
+      meshRef.current.geometry.dispose();
+      meshRef.current.material.dispose();
+      meshRef.current = null;
+    }
+
+    // Сүрөттү height map кылып иштетүү
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+
+      // Геометрия түзүү (көп бөлүктүү)
+      const segments = 128;
+      const geometry = new THREE.PlaneGeometry(3, 3, segments, segments);
+      const positionAttribute = geometry.attributes.position;
+      const vertex = new THREE.Vector3();
+
+      for (let i = 0; i < positionAttribute.count; i++) {
+        vertex.fromBufferAttribute(positionAttribute, i);
+        const x = (vertex.x / 1.5 + 0.5) * canvas.width;
+        const y = (-vertex.y / 1.5 + 0.5) * canvas.height;
+        const index = (Math.floor(y) * canvas.width + Math.floor(x)) * 4;
+        const brightness = data[index] / 255;
+        vertex.z = brightness * 0.5;
+        positionAttribute.setXYZ(i, vertex.x, vertex.y, vertex.z);
+      }
+
+      geometry.computeVertexNormals();
+
+      // Фигуранын формасын кесүү (clip-path эмес, геометрия менен)
+      // Бул жерде жөнөкөйлөтүп, тек сүрөттүн өзүн көрсөтөбүз
+
+      // Материал
+      const material = new THREE.MeshPhysicalMaterial({
+        color: 0xf5e6d3,
+        metalness: 0.1,
+        roughness: 0.4,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.2,
+        side: THREE.DoubleSide,
+        envMapIntensity: 0.6
+      });
+
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.position.y = 0;
+      
+      sceneRef.current.add(mesh);
+      meshRef.current = mesh;
+
+      // Орбиталык башкарууну сүрөткө багыттоо
+      if (controlsRef.current) {
+        controlsRef.current.target.set(0, 0, 0);
+        controlsRef.current.update();
+      }
+    };
+    img.src = uploadedImage;
+
+  }, [uploadedImage]);
+
   const handleImageUpload = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -46,19 +220,8 @@ function LithophanyConstructor() {
     }
   };
 
-  // Автоматтык айлануу (сүрөт жүктөлгөндө)
-  useEffect(() => {
-    if (uploadedImage && !isHovering) {
-      const interval = setInterval(() => {
-        rotateY.set(rotateY.get() + 1);
-      }, 30);
-      return () => clearInterval(interval);
-    }
-  }, [uploadedImage, isHovering, rotateY]);
-
   const selectedSizeData = sizes.find((s) => s.id === selectedSize);
 
-  // Заказды жөнөтүү
   const handleSubmitOrder = async (e) => {
     e.preventDefault();
     if (!customerName || !phoneNumber) {
@@ -93,6 +256,11 @@ function LithophanyConstructor() {
         setPhoneNumber("");
         setUploadedImage(null);
         setImageFile(null);
+        // 3D моделирди тазалоо
+        if (meshRef.current && sceneRef.current) {
+          sceneRef.current.remove(meshRef.current);
+          meshRef.current = null;
+        }
       } else {
         setMessage({ type: "error", text: "❌ Ката кетти, кийинчерээк аракет кылыңыз." });
       }
@@ -103,93 +271,32 @@ function LithophanyConstructor() {
     }
   };
 
-  // Фигуранын clipPath стилин алуу
-  const getClipPath = () => {
-    switch(selectedShape) {
-      case "circle": return "circle(50% at 50% 50%)";
-      case "heart": return "path('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z')";
-      case "star": return "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)";
-      default: return "none";
-    }
-  };
-
   return /* @__PURE__ */ jsx("div", { className: "min-h-screen pt-32 pb-20 bg-gradient-to-br from-amber-50 via-white to-amber-50/50", children: /* @__PURE__ */ jsx("div", { className: "max-w-7xl mx-auto px-4", children: /* @__PURE__ */ jsxs("div", { className: "grid lg:grid-cols-2 gap-12", children: [
     
-    /* === СОЛ ЖАГЫ: 3D ПРЕВЬЮ + КОНСТРУКТОР === */
+    /* === СОЛ ЖАГЫ: 3D СЦЕНА + КОНСТРУКТОР === */
     /* @__PURE__ */ jsxs("div", { className: "space-y-8", children: [
       
-      /* 3D Превью контейнери */
-      /* @__PURE__ */ jsxs("div", { 
-        className: "relative aspect-square rounded-2xl bg-gradient-to-br from-amber-100/50 to-amber-200/30 shadow-2xl overflow-hidden border-2 border-amber-200/50",
-        onMouseEnter: () => setIsHovering(true),
-        onMouseLeave: () => setIsHovering(false),
+      /* 3D Контейнер */
+      /* @__PURE__ */ jsx("div", { 
+        ref: containerRef,
+        className: "w-full aspect-square rounded-2xl bg-gradient-to-br from-amber-100/30 to-amber-200/20 shadow-2xl overflow-hidden border-2 border-amber-200/30",
+      }),
+      
+      /* Сүрөт жүктөө инпуту */
+      /* @__PURE__ */ jsx("input", { id: "photo-upload", type: "file", className: "hidden", onChange: handleImageUpload }),
+      
+      /* Сүрөт жүктөө баскычы */
+      /* @__PURE__ */ jsxs("label", { 
+        htmlFor: "photo-upload",
+        className: "block w-full py-4 bg-amber-600 hover:bg-amber-700 text-white rounded-full font-bold text-center cursor-pointer shadow-lg shadow-amber-500/30 transition-all",
         children: [
-          // 3D жарык эффекти (градиент)
-          /* @__PURE__ */ jsx("div", { className: "absolute inset-0 bg-gradient-to-tr from-amber-500/10 via-transparent to-amber-500/10 pointer-events-none z-10" }),
-          
-          // Сүрөт же жүктөө плашкасы
-          uploadedImage ? (
-            /* @__PURE__ */ jsx(motion.div, {
-              className: "w-full h-full p-4 flex items-center justify-center",
-              style: {
-                perspective: "1200px",
-                rotateX: rotateX,
-                rotateY: rotateY,
-                scale: scale,
-                transformStyle: "preserve-3d",
-              },
-              whileHover: { scale: 1.05 },
-              transition: { duration: 0.3 },
-              children: /* @__PURE__ */ jsx("img", { 
-                src: uploadedImage, 
-                className: "w-full h-full object-cover rounded-xl shadow-2xl",
-                style: {
-                  clipPath: getClipPath(),
-                  boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)",
-                  transform: "translateZ(20px)", // 3D калыңдык эффекти
-                }
-              })
-            })
-          ) : (
-            /* Сүрөт жүктөлбөгөн учур */
-            /* @__PURE__ */ jsxs("label", { 
-              htmlFor: "photo-upload", 
-              className: "block w-full h-full cursor-pointer flex items-center justify-center",
-              children: [
-                /* @__PURE__ */ jsxs(motion.div, { 
-                  className: "text-center p-8",
-                  initial: { scale: 0.9, opacity: 0.5 },
-                  animate: { scale: 1, opacity: 1 },
-                  transition: { duration: 0.5, repeat: Infinity, repeatType: "reverse" },
-                  children: [
-                    /* @__PURE__ */ jsx(Upload, { className: "w-16 h-16 mx-auto text-amber-400" }),
-                    /* @__PURE__ */ jsx("p", { className: "mt-4 text-amber-600 font-medium text-lg", children: "🖼️ Сүрөт жүктөө" }),
-                    /* @__PURE__ */ jsx("p", { className: "text-sm text-amber-400/70", children: "3D эффект үчүн сүрөт тандаңыз" })
-                  ]
-                })
-              ]
-            })
-          ),
-          
-          // 3D көрсөткүч белги (сүрөт жүктөлгөндө)
-          uploadedImage && (
-            /* @__PURE__ */ jsx(motion.div, { 
-              className: "absolute bottom-4 right-4 bg-black/40 backdrop-blur-sm text-white text-xs px-3 py-1 rounded-full z-20",
-              initial: { opacity: 0, y: 10 },
-              animate: { opacity: 1, y: 0 },
-              children: "✨ 3D режим"
-            })
-          )
+          /* @__PURE__ */ jsx(Upload, { className: "w-5 h-5 inline-block mr-2" }),
+          "📸 Сүрөт жүктөө (3D эффект үчүн)"
         ]
       }),
       
-      /* Сүрөт жүктөө инпуту (жашыруун) */
-      /* @__PURE__ */ jsx("input", { id: "photo-upload", type: "file", className: "hidden", onChange: handleImageUpload }),
-      
       /* Фигуралар */
-      /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 sm:grid-cols-4 gap-4", children: shapes.map((shape) => /* @__PURE__ */ jsxs("motion.button", { 
-        whileHover: { scale: 1.05, y: -2 },
-        whileTap: { scale: 0.95 },
+      /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 sm:grid-cols-4 gap-4", children: shapes.map((shape) => /* @__PURE__ */ jsxs("button", { 
         onClick: () => setSelectedShape(shape.id), 
         className: `p-6 rounded-xl border-2 transition-all ${selectedShape === shape.id ? "border-amber-500 bg-amber-500/10 shadow-lg shadow-amber-500/20" : "border-border hover:border-amber-500/50"}`, 
         children: [
@@ -199,9 +306,7 @@ function LithophanyConstructor() {
       }, shape.id)) }),
 
       /* Өлчөмдөр */
-      /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-4", children: sizes.map((size) => /* @__PURE__ */ jsxs("motion.button", { 
-        whileHover: { scale: 1.03 },
-        whileTap: { scale: 0.97 },
+      /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-4", children: sizes.map((size) => /* @__PURE__ */ jsxs("button", { 
         onClick: () => setSelectedSize(size.id), 
         className: `p-6 rounded-xl border-2 transition-all ${selectedSize === size.id ? "border-amber-500 bg-amber-500/10 shadow-lg shadow-amber-500/20" : "border-border hover:border-amber-500/50"}`, 
         children: [
@@ -213,17 +318,11 @@ function LithophanyConstructor() {
 
     /* === ОН ЖАГЫ: ЗАКАЗ ФОРМАСЫ === */
     /* @__PURE__ */ jsxs("div", { className: "lg:sticky lg:top-32 self-start", children: [
-      /* @__PURE__ */ jsxs(motion.div, { 
+      /* @__PURE__ */ jsxs("div", { 
         className: "bg-white/80 backdrop-blur-sm p-8 rounded-2xl border border-amber-100 shadow-xl",
-        initial: { opacity: 0, y: 20 },
-        animate: { opacity: 1, y: 0 },
-        transition: { delay: 0.2 },
         children: [
           /* Башчысы */
-          /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 mb-6", children: [
-            /* @__PURE__ */ jsx(Sparkles, { className: "w-6 h-6 text-amber-500" }),
-            /* @__PURE__ */ jsx("h3", { className: "text-2xl font-bold text-amber-800", children: "Заказ берүү" })
-          ] }),
+          /* @__PURE__ */ jsx("h3", { className: "text-2xl font-bold text-amber-800 mb-6", children: "📋 Заказ берүү" }),
           
           /* Форма */
           /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
@@ -253,20 +352,18 @@ function LithophanyConstructor() {
           ] }),
           
           /* Ката/Ийгилик билдирүүсү */
-          message.text && /* @__PURE__ */ jsx(motion.p, { 
-            initial: { opacity: 0, y: -10 },
-            animate: { opacity: 1, y: 0 },
+          message.text && /* @__PURE__ */ jsx("p", { 
             className: `text-center p-3 rounded-lg ${message.type === "success" ? "bg-green-500/10 text-green-600" : "bg-red-500/10 text-red-600"}`,
             children: message.text 
           }),
           
           /* Заказ берүү баскычы */
           /* @__PURE__ */ jsxs(motion.button, { 
-            whileHover: { scale: 1.02, boxShadow: "0 20px 25px -5px rgba(245, 158, 11, 0.2)" },
+            whileHover: { scale: 1.02 },
             whileTap: { scale: 0.98 },
             onClick: handleSubmitOrder, 
             disabled: loading, 
-            className: "w-full py-4 bg-gradient-to-r from-amber-600 to-amber-500 text-white rounded-full font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/30 disabled:opacity-60 disabled:cursor-not-allowed transition-all",
+            className: "w-full py-4 bg-amber-600 hover:bg-amber-700 text-white rounded-full font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/30 disabled:opacity-60 disabled:cursor-not-allowed transition-all",
             children: [
               /* @__PURE__ */ jsx(ShoppingCart, { className: "w-5 h-5" }), 
               loading ? "⏳ Жөнөтүлүүдө..." : "📩 Ватсап аркылуу заказ берүү"
