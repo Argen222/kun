@@ -28,7 +28,7 @@ function ContactPage() {
                       /* @__PURE__ */ jsx("div", { className: "p-3 rounded-full bg-primary/10", children: /* @__PURE__ */ jsx(MapPin, { className: "w-5 h-5 text-primary" }) }),
                       /* @__PURE__ */ jsxs("div", { children: [
                         /* @__PURE__ */ jsx("h4", { className: "font-semibold mb-1", children: "Дарегибиз" }),
-                        /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Бишкек шаары, Чүй проспектиси 123" })
+                        /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Ош шаары, Осконалиева көчөсү 1" })
                       ] })
                     ]
                   }
@@ -45,9 +45,9 @@ function ContactPage() {
                         /* @__PURE__ */ jsx(
                           "a",
                           {
-                            href: "mailto:hello@kun.com",
+                            href: "mailto:azamatovargen12@gmail.com",
                             className: "text-muted-foreground hover:text-primary transition-colors",
-                            children: "hello@kun.com"
+                            children: "azamatovargen12@gmail.com"
                           }
                         )
                       ] })
@@ -66,9 +66,9 @@ function ContactPage() {
                         /* @__PURE__ */ jsx(
                           "a",
                           {
-                            href: "tel:+996555123456",
+                            href: "tel:+996770150025",
                             className: "text-muted-foreground hover:text-primary transition-colors",
-                            children: "+996 (555) 123-456"
+                            children: "+996 770 150 025"
                           }
                         )
                       ] })
