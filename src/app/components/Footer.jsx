@@ -2,6 +2,7 @@ import { jsx, jsxs } from "react/jsx-runtime";
 import { Sun, Instagram, MessageCircle, Send, MapPin, Mail, Phone } from "lucide-react";
 import { Link } from "react-router";
 import { motion } from "motion/react";
+
 function Footer() {
   return /* @__PURE__ */ jsx("footer", { className: "border-t border-border bg-card", children: /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16", children: [
     /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12", children: [
@@ -81,15 +82,15 @@ function Footer() {
         /* @__PURE__ */ jsxs("div", { className: "space-y-3 text-muted-foreground", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-3", children: [
             /* @__PURE__ */ jsx(MapPin, { className: "w-5 h-5 mt-0.5 flex-shrink-0" }),
-            /* @__PURE__ */ jsx("p", { children: "Офис: ул. Летэх, 123, г. Летэх, Л-12345" })
+            /* @__PURE__ */ jsx("p", { children: "Ош шаары, Осконалиева көчөсү 1" })
           ] }),
           /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
             /* @__PURE__ */ jsx(Mail, { className: "w-5 h-5 flex-shrink-0" }),
-            /* @__PURE__ */ jsx("a", { href: "mailto:hello@kun.com", className: "hover:text-primary transition-colors", children: "hello@kun.com" })
+            /* @__PURE__ */ jsx("a", { href: "mailto:azamatovargen12@gmail.com", className: "hover:text-primary transition-colors", children: "azamatovargen12@gmail.com" })
           ] }),
           /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
             /* @__PURE__ */ jsx(Phone, { className: "w-5 h-5 flex-shrink-0" }),
-            /* @__PURE__ */ jsx("a", { href: "tel:+1234567890", className: "hover:text-primary transition-colors", children: "+1 (234) 567-890" })
+            /* @__PURE__ */ jsx("a", { href: "tel:+996770150025", className: "hover:text-primary transition-colors", children: "+996 770 150 025" })
           ] })
         ] })
       ] })
