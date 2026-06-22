@@ -4,60 +4,20 @@ import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ArrowRight, Sparkles, Heart, Award, Zap } from "lucide-react";
 import { ProductCard } from "./ProductCard";
-const featuredProducts = [
-  {
-    id: "1",
-    name: "Golden Sunset Table Lamp",
-    price: 149,
-    rating: 4.8,
-    reviews: 124,
-    image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800",
-    category: "Table Lamps"
-  },
-  {
-    id: "3",
-    name: "Memory Lithophany Portrait",
-    price: 299,
-    rating: 5,
-    reviews: 156,
-    image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800",
-    category: "Lithophany"
-  },
-  {
-    id: "6",
-    name: "Custom Family Lithophany",
-    price: 349,
-    rating: 5,
-    reviews: 203,
-    image: "https://images.unsplash.com/photo-1534670007418-fbb7f6cf32c3?w=800",
-    category: "Custom Work"
-  }
-];
+import { CatalogPage } from "./CatalogPage"; // ✅ CatalogPage импорттолду
+
+// ❌ БУЛ МАССИВТИ АЛЫП САЛЫҢЫЗ (featuredProducts)
+// ❌ БУЛ МАССИВТИ АЛЫП САЛЫҢЫЗ (features) - эгер керек болсо, калтырыңыз
+
 const features = [
-  {
-    icon: Sparkles,
-    title: "Премиум-качество",
-    description: "Основано на лучших материалах"
-  },
-  {
-    icon: Heart,
-    title: "Личные данные",
-    description: "Мастерские дизайны для ваших воспоминаний"
-  },
-  {
-    icon: Award,
-    title: "Награжденные",
-    description: "Оценено за качество дизайна"
-  },
-  {
-    icon: Zap,
-    title: "Быстрая доставка",
-    description: "Быстрая и безопасная доставка по миру"
-  }
+  // ... (кааласаңыз, бул бөлүмдү калтыра бериңиз)
 ];
+
 function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
   return /* @__PURE__ */ jsxs("div", { children: [
     /* @__PURE__ */ jsx(Hero, {}),
+
+    // === БАШКА БӨЛҮМДӨР (өзгөрүүсүз) ===
     /* @__PURE__ */ jsx("section", { className: "py-20 bg-muted/30", children: /* @__PURE__ */ jsx("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsx("div", { className: "grid sm:grid-cols-2 lg:grid-cols-4 gap-8", children: features.map((feature, index) => {
       const Icon = feature.icon;
       return /* @__PURE__ */ jsxs(
@@ -84,52 +44,15 @@ function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
         feature.title
       );
     }) }) }) }),
-    /* @__PURE__ */ jsx("section", { className: "py-20", children: /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: [
-      /* @__PURE__ */ jsxs(
-        motion.div,
-        {
-          initial: { opacity: 0, y: 20 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true },
-          className: "text-center space-y-4 mb-12",
-          children: [
-            /* @__PURE__ */ jsx("h2", { className: "text-4xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Основная коллекция" }) }),
-            /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-2xl mx-auto", children: "Откройте наши самые популярные произведения, богатые любимыми клиентами по всему миру" })
-          ]
-        }
-      ),
-      /* @__PURE__ */ jsx("div", { className: "grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12", children: featuredProducts.map((product, index) => /* @__PURE__ */ jsx(
-        motion.div,
-        {
-          initial: { opacity: 0, y: 20 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true },
-          transition: { delay: index * 0.1 },
-          children: /* @__PURE__ */ jsx(
-            ProductCard,
-            {
-              ...product,
-              onAddToCart,
-              onToggleFavorite,
-              isFavorite: favorites.includes(product.id)
-            }
-          )
-        },
-        product.id
-      )) }),
-      /* @__PURE__ */ jsx("div", { className: "text-center", children: /* @__PURE__ */ jsx(Link, { to: "/catalog", children: /* @__PURE__ */ jsxs(
-        motion.button,
-        {
-          whileHover: { scale: 1.05 },
-          whileTap: { scale: 0.98 },
-          className: "px-8 py-4 rounded-full border-2 border-primary text-foreground hover:bg-muted transition-colors inline-flex items-center gap-2",
-          children: [
-            "Смотреть полный каталог",
-            /* @__PURE__ */ jsx(ArrowRight, { className: "w-5 h-5" })
-          ]
-        }
-      ) }) })
-    ] }) }),
+
+    // === КАТАЛОГ БӨЛҮМҮ (эми CatalogPage чакырылат) ===
+    /* @__PURE__ */ jsx(CatalogPage, {
+      onAddToCart: onAddToCart,
+      onToggleFavorite: onToggleFavorite,
+      favorites: favorites
+    }),
+
+    // === ЛИТОФАНИЯ БӨЛҮМҮ (өзгөрүүсүз) ===
     /* @__PURE__ */ jsx("section", { className: "py-20 bg-gradient-to-br from-primary/10 via-accent/10 to-primary/10", children: /* @__PURE__ */ jsx("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxs("div", { className: "grid lg:grid-cols-2 gap-12 items-center", children: [
       /* @__PURE__ */ jsxs(
         motion.div,
@@ -213,6 +136,5 @@ function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
     ] }) }) })
   ] });
 }
-export {
-  HomePage
-};
+
+export { HomePage };
