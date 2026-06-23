@@ -243,7 +243,7 @@ function CatalogPage({ onAddToCart, onToggleFavorite, favorites = [] }) {
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-xl font-bold text-amber-600">${product.price}</span>
+                      <span className="text-xl font-bold text-amber-600">{product.price} сом</span>
                       <button
                         onClick={() => onAddToCart(djangoId)}
                         className="flex items-center gap-1 bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
