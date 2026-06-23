@@ -11,13 +11,13 @@ function ContactPage() {
       className: "space-y-12",
       children: [
         /* @__PURE__ */ jsxs("div", { className: "text-center space-y-6", children: [
-          /* @__PURE__ */ jsx("h1", { className: "text-4xl sm:text-5xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Биз менен байланышыңыз" }) }),
-          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-2xl mx-auto", children: "Суроолоруңуз барбы же өзгөчө бир нерсе жараткыңыз келеби? Сиздин идеяларыңызды ишке ашырууга жардам берүүгө даярбыз." })
+          /* @__PURE__ */ jsx("h1", { className: "text-4xl sm:text-5xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Свяжитесь с нами" }) }),
+          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-2xl mx-auto", children: "Есть вопросы или хотите создать что-то особенное? Мы готовы помочь воплотить ваши идеи в жизнь." })
         ] }),
         /* @__PURE__ */ jsxs("div", { className: "grid lg:grid-cols-2 gap-12", children: [
           /* @__PURE__ */ jsxs("div", { className: "space-y-8", children: [
             /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-              /* @__PURE__ */ jsx("h2", { className: "text-2xl font-bold", children: "Байланыш маалыматтары" }),
+              /* @__PURE__ */ jsx("h2", { className: "text-2xl font-bold", children: "Контактная информация" }),
               /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
                 /* @__PURE__ */ jsxs(
                   motion.div,
@@ -27,8 +27,8 @@ function ContactPage() {
                     children: [
                       /* @__PURE__ */ jsx("div", { className: "p-3 rounded-full bg-primary/10", children: /* @__PURE__ */ jsx(MapPin, { className: "w-5 h-5 text-primary" }) }),
                       /* @__PURE__ */ jsxs("div", { children: [
-                        /* @__PURE__ */ jsx("h4", { className: "font-semibold mb-1", children: "Дарегибиз" }),
-                        /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Ош шаары, Осконалиева көчөсү 1" })
+                        /* @__PURE__ */ jsx("h4", { className: "font-semibold mb-1", children: "Наш адрес" }),
+                        /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "г. Ош, ул. Осконалиева 1" })
                       ] })
                     ]
                   }
@@ -41,7 +41,7 @@ function ContactPage() {
                     children: [
                       /* @__PURE__ */ jsx("div", { className: "p-3 rounded-full bg-primary/10", children: /* @__PURE__ */ jsx(Mail, { className: "w-5 h-5 text-primary" }) }),
                       /* @__PURE__ */ jsxs("div", { children: [
-                        /* @__PURE__ */ jsx("h4", { className: "font-semibold mb-1", children: "Электрондук почта" }),
+                        /* @__PURE__ */ jsx("h4", { className: "font-semibold mb-1", children: "Электронная почта" }),
                         /* @__PURE__ */ jsx(
                           "a",
                           {
@@ -83,11 +83,11 @@ function ContactPage() {
                     children: [
                       /* @__PURE__ */ jsx("div", { className: "p-3 rounded-full bg-primary/10", children: /* @__PURE__ */ jsx(Clock, { className: "w-5 h-5 text-primary" }) }),
                       /* @__PURE__ */ jsxs("div", { children: [
-                        /* @__PURE__ */ jsx("h4", { className: "font-semibold mb-1", children: "Иштөө убактысы" }),
+                        /* @__PURE__ */ jsx("h4", { className: "font-semibold mb-1", children: "Часы работы" }),
                         /* @__PURE__ */ jsxs("div", { className: "text-muted-foreground space-y-1", children: [
-                          /* @__PURE__ */ jsx("p", { children: "Дүйшөмбү - Жума: 09:00 - 18:00" }),
-                          /* @__PURE__ */ jsx("p", { children: "Ишемби: 10:00 - 16:00" }),
-                          /* @__PURE__ */ jsx("p", { children: "Жекшемби: Эс алуу күнү" })
+                          /* @__PURE__ */ jsx("p", { children: "Понедельник - Пятница: 09:00 - 18:00" }),
+                          /* @__PURE__ */ jsx("p", { children: "Суббота: 10:00 - 16:00" }),
+                          /* @__PURE__ */ jsx("p", { children: "Воскресенье: Выходной" })
                         ] })
                       ] })
                     ]
@@ -96,7 +96,7 @@ function ContactPage() {
               ] })
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
-              /* @__PURE__ */ jsx("h3", { className: "text-xl font-semibold", children: "Бизди социалдык тармактардан байкаңыз" }),
+              /* @__PURE__ */ jsx("h3", { className: "text-xl font-semibold", children: "Следите за нами в соцсетях" }),
               /* @__PURE__ */ jsxs("div", { className: "flex gap-4", children: [
                 /* @__PURE__ */ jsx(
                   motion.a,
@@ -155,36 +155,36 @@ function ContactPage() {
                 boxShadow: "0 8px 32px 0 rgba(212, 165, 116, 0.1)"
               },
               children: [
-                /* @__PURE__ */ jsx("h2", { className: "text-2xl font-bold", children: "Бизге кат жазыңыз" }),
+                /* @__PURE__ */ jsx("h2", { className: "text-2xl font-bold", children: "Напишите нам" }),
                 /* @__PURE__ */ jsxs("form", { className: "space-y-6", children: [
                   /* @__PURE__ */ jsxs("div", { className: "grid sm:grid-cols-2 gap-4", children: [
                     /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
-                      /* @__PURE__ */ jsx("label", { htmlFor: "firstName", className: "text-sm font-medium", children: "Атыңыз" }),
+                      /* @__PURE__ */ jsx("label", { htmlFor: "firstName", className: "text-sm font-medium", children: "Ваше имя" }),
                       /* @__PURE__ */ jsx(
                         "input",
                         {
                           id: "firstName",
                           type: "text",
-                          placeholder: "Мисалы, Али",
+                          placeholder: "Например, Али",
                           className: "w-full px-4 py-3 rounded-xl border border-border bg-input-background focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                         }
                       )
                     ] }),
                     /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
-                      /* @__PURE__ */ jsx("label", { htmlFor: "lastName", className: "text-sm font-medium", children: "Фамилияңыз" }),
+                      /* @__PURE__ */ jsx("label", { htmlFor: "lastName", className: "text-sm font-medium", children: "Ваша фамилия" }),
                       /* @__PURE__ */ jsx(
                         "input",
                         {
                           id: "lastName",
                           type: "text",
-                          placeholder: "Мисалы, Асанов",
+                          placeholder: "Например, Асанов",
                           className: "w-full px-4 py-3 rounded-xl border border-border bg-input-background focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                         }
                       )
                     ] })
                   ] }),
                   /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
-                    /* @__PURE__ */ jsx("label", { htmlFor: "email", className: "text-sm font-medium", children: "Электрондук почта" }),
+                    /* @__PURE__ */ jsx("label", { htmlFor: "email", className: "text-sm font-medium", children: "Электронная почта" }),
                     /* @__PURE__ */ jsx(
                       "input",
                       {
@@ -196,25 +196,25 @@ function ContactPage() {
                     )
                   ] }),
                   /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
-                    /* @__PURE__ */ jsx("label", { htmlFor: "subject", className: "text-sm font-medium", children: "Темасы" }),
+                    /* @__PURE__ */ jsx("label", { htmlFor: "subject", className: "text-sm font-medium", children: "Тема" }),
                     /* @__PURE__ */ jsx(
                       "input",
                       {
                         id: "subject",
                         type: "text",
-                        placeholder: "Кантип жардам бере алабыз?",
+                        placeholder: "Чем можем помочь?",
                         className: "w-full px-4 py-3 rounded-xl border border-border bg-input-background focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
                       }
                     )
                   ] }),
                   /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
-                    /* @__PURE__ */ jsx("label", { htmlFor: "message", className: "text-sm font-medium", children: "Билдирүү" }),
+                    /* @__PURE__ */ jsx("label", { htmlFor: "message", className: "text-sm font-medium", children: "Сообщение" }),
                     /* @__PURE__ */ jsx(
                       "textarea",
                       {
                         id: "message",
                         rows: 6,
-                        placeholder: "Долбооруңуз же сурооңуз тууралуу кененирээк жазыңыз...",
+                        placeholder: "Опишите подробнее ваш проект или вопрос...",
                         className: "w-full px-4 py-3 rounded-xl border border-border bg-input-background focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none"
                       }
                     )
@@ -226,7 +226,7 @@ function ContactPage() {
                       whileTap: { scale: 0.98 },
                       type: "submit",
                       className: "w-full px-6 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg",
-                      children: "Билдирүүнү жөнөтүү"
+                      children: "Отправить сообщение"
                     }
                   )
                 ] })
