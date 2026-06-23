@@ -70,16 +70,16 @@ function Hero() {
                 className: "inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 backdrop-blur-sm border border-border",
                 children: [
                   /* @__PURE__ */ jsx(Sparkles, { className: "w-4 h-4 text-accent" }),
-                  /* @__PURE__ */ jsx("span", { className: "text-sm", children: "Premium Handcrafted Lighting" })
+                  /* @__PURE__ */ jsx("span", { className: "text-sm", children: "Премиальное освещение ручной работы" })
                 ]
               }
             ),
             /* @__PURE__ */ jsxs("h1", { className: "text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight", children: [
-              /* @__PURE__ */ jsx("span", { className: "block text-foreground", children: "KUN is a light" }),
-              /* @__PURE__ */ jsx("span", { className: "block bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "that revives" }),
-              /* @__PURE__ */ jsx("span", { className: "block text-foreground", children: "memories" })
+              /* @__PURE__ */ jsx("span", { className: "block text-foreground", children: "KUN — это свет," }),
+              /* @__PURE__ */ jsx("span", { className: "block bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "который оживляет" }),
+              /* @__PURE__ */ jsx("span", { className: "block text-foreground", children: "воспоминания" })
             ] }),
-            /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-xl", children: "Transform your space with our exclusive collection of handcrafted lamps and personalized lithophany. Each piece radiates warmth, creating an atmosphere of comfort and elegance." }),
+            /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-xl", children: "Преобразите свое пространство с нашей эксклюзивной коллекцией ламп ручной работы и персонализированной литофании. Каждое изделие излучает тепло, создавая атмосферу уюта и элегантности." }),
             /* @__PURE__ */ jsxs("div", { className: "flex flex-col sm:flex-row gap-4", children: [
               /* @__PURE__ */ jsx(Link, { to: "/catalog", children: /* @__PURE__ */ jsxs(
                 motion.button,
@@ -88,7 +88,7 @@ function Hero() {
                   whileTap: { scale: 0.98 },
                   className: "px-8 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground flex items-center gap-2 shadow-lg",
                   children: [
-                    "Explore Catalog",
+                    "Перейти в каталог",
                     /* @__PURE__ */ jsx(ArrowRight, { className: "w-5 h-5" })
                   ]
                 }
@@ -100,7 +100,7 @@ function Hero() {
                   whileTap: { scale: 0.98 },
                   className: "px-8 py-4 rounded-full border-2 border-primary text-foreground hover:bg-muted transition-colors flex items-center gap-2",
                   children: [
-                    "Create Your Lithophany",
+                    "Создать свою литофанию",
                     /* @__PURE__ */ jsx(Sparkles, { className: "w-5 h-5" })
                   ]
                 }
