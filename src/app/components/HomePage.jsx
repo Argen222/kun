@@ -4,20 +4,20 @@ import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ArrowRight, Sparkles, Heart, Award, Zap } from "lucide-react";
 import { ProductCard } from "./ProductCard";
-import { CatalogPage } from "./CatalogPage"; // ✅ CatalogPage импорттолду
+import { CatalogPage } from "./CatalogPage"; // ✅ CatalogPage импортирован
 
-// ❌ БУЛ МАССИВТИ АЛЫП САЛЫҢЫЗ (featuredProducts)
-// ❌ БУЛ МАССИВТИ АЛЫП САЛЫҢЫЗ (features) - эгер керек болсо, калтырыңыз
+// ❌ ЭТОТ МАССИВ УДАЛИТЬ (featuredProducts)
+// ❌ ЭТОТ МАССИВ УДАЛИТЬ (features) - если нужно, оставьте
 
 const features = [
-  // ... (кааласаңыз, бул бөлүмдү калтыра бериңиз)
+  // ... (если хотите, эту секцию можно оставить)
 ];
 
 function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
   return /* @__PURE__ */ jsxs("div", { children: [
     /* @__PURE__ */ jsx(Hero, {}),
 
-    // === БАШКА БӨЛҮМДӨР (өзгөрүүсүз) ===
+    // === ДРУГИЕ СЕКЦИИ (без изменений) ===
     /* @__PURE__ */ jsx("section", { className: "py-20 bg-muted/30", children: /* @__PURE__ */ jsx("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsx("div", { className: "grid sm:grid-cols-2 lg:grid-cols-4 gap-8", children: features.map((feature, index) => {
       const Icon = feature.icon;
       return /* @__PURE__ */ jsxs(
@@ -45,14 +45,14 @@ function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
       );
     }) }) }) }),
 
-    // === КАТАЛОГ БӨЛҮМҮ (эми CatalogPage чакырылат) ===
+    // === СЕКЦИЯ КАТАЛОГА (теперь вызывается CatalogPage) ===
     /* @__PURE__ */ jsx(CatalogPage, {
       onAddToCart: onAddToCart,
       onToggleFavorite: onToggleFavorite,
       favorites: favorites
     }),
 
-    // === ЛИТОФАНИЯ БӨЛҮМҮ (өзгөрүүсүз) ===
+    // === СЕКЦИЯ ЛИТОФАНИИ (без изменений) ===
     /* @__PURE__ */ jsx("section", { className: "py-20 bg-gradient-to-br from-primary/10 via-accent/10 to-primary/10", children: /* @__PURE__ */ jsx("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxs("div", { className: "grid lg:grid-cols-2 gap-12 items-center", children: [
       /* @__PURE__ */ jsxs(
         motion.div,
@@ -62,9 +62,9 @@ function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
           viewport: { once: true },
           className: "space-y-6",
           children: [
-            /* @__PURE__ */ jsx("h2", { className: "text-4xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Создавайте кы личную литофанию" }) }),
-            /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground", children: "Превратите ваши амидные воспоминания в замечательные световые арты. Наша продвинутая технология литофании приводит ваши фото в жизнь прекрасным светом и тенью." }),
-            /* @__PURE__ */ jsx("ul", { className: "space-y-3", children: ["Загрузить любое фото", "Выберите предпочитаемую форму и размер", "Просмотрите в режиме реального времени", "Получите невероятную ручную работу"].map(
+            /* @__PURE__ */ jsx("h2", { className: "text-4xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Создайте свою личную литофанию" }) }),
+            /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground", children: "Превратите ваши любимые воспоминания в замечательные световые арты. Наша передовая технология литофании оживляет ваши фото с помощью прекрасного света и тени." }),
+            /* @__PURE__ */ jsx("ul", { className: "space-y-3", children: ["Загрузите любое фото", "Выберите предпочитаемую форму и размер", "Просмотрите в режиме реального времени", "Получите невероятную ручную работу"].map(
               (item, index) => /* @__PURE__ */ jsxs(
                 motion.li,
                 {
