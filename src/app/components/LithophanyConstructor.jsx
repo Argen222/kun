@@ -6,16 +6,16 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const shapes = [
   { id: "square", name: "Квадрат", icon: Square },
-  { id: "circle", name: "Тегерек", icon: Circle },
-  { id: "heart", name: "Жүрөк", icon: Heart },
-  { id: "star", name: "Жылдыз", icon: Star }
+  { id: "circle", name: "Круг", icon: Circle },
+  { id: "heart", name: "Сердце", icon: Heart },
+  { id: "star", name: "Звезда", icon: Star }
 ];
 
 const sizes = [
-  { id: "small", name: "Кичинекей", dimensions: '4" x 4"' },
-  { id: "medium", name: "Орто", dimensions: '6" x 6"' },
-  { id: "large", name: "Чоң", dimensions: '8" x 8"' },
-  { id: "xlarge", name: "Өтө чоң", dimensions: '10" x 10"' }
+  { id: "small", name: "Маленький", dimensions: '4" x 4"' },
+  { id: "medium", name: "Средний", dimensions: '6" x 6"' },
+  { id: "large", name: "Большой", dimensions: '8" x 8"' },
+  { id: "xlarge", name: "Очень большой", dimensions: '10" x 10"' }
 ];
 
 function LithophanyConstructor() {
@@ -35,7 +35,7 @@ function LithophanyConstructor() {
   const meshRef = useRef(null);
   const controlsRef = useRef(null);
 
-  // Three.js сценасын түзүү
+  // Создание сцены Three.js
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -64,7 +64,7 @@ function LithophanyConstructor() {
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // Орбиталык башкаруу
+    // Орбитальное управление
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
@@ -75,7 +75,7 @@ function LithophanyConstructor() {
     controls.target.set(0, 0, 0);
     controlsRef.current = controls;
 
-    // Жарыктар
+    // Освещение
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
@@ -120,7 +120,7 @@ function LithophanyConstructor() {
     };
     animate();
 
-    // Терезе өлчөмү
+    // Изменение размера окна
     const handleResize = () => {
       if (!containerRef.current) return;
       const width = containerRef.current.clientWidth;
@@ -140,11 +140,11 @@ function LithophanyConstructor() {
     };
   }, []);
 
-  // Сүрөттөн 3D модель түзүү
+  // Создание 3D модели из изображения
   useEffect(() => {
     if (!uploadedImage || !sceneRef.current) return;
 
-    // Эски модельди өчүрүү
+    // Удаление старой модели
     if (meshRef.current) {
       sceneRef.current.remove(meshRef.current);
       meshRef.current.geometry.dispose();
@@ -231,11 +231,11 @@ function LithophanyConstructor() {
   const handleSubmitOrder = async (e) => {
     e.preventDefault();
     if (!customerName || !phoneNumber) {
-      setMessage({ type: "error", text: "Атыңызды жана телефон номериңизди жазыңыз!" });
+      setMessage({ type: "error", text: "Введите ваше имя и номер телефона!" });
       return;
     }
     if (!imageFile) {
-      setMessage({ type: "error", text: "Сураныч, сүрөт жүктөп бериңиз!" });
+      setMessage({ type: "error", text: "Пожалуйста, загрузите изображение!" });
       return;
     }
 
@@ -254,10 +254,10 @@ function LithophanyConstructor() {
       });
 
       if (response.ok) {
-        const text = `🕯️ Жаңы литофания заказы!\n\n👤 Кардар: ${customerName}\n📞 Телефон: ${phoneNumber}\n🔷 Формасы: ${selectedShape}\n📏 Өлчөмү: ${selectedSizeData?.dimensions}`;
+        const text = `🕯️ Новый заказ литофании!\n\n👤 Клиент: ${customerName}\n📞 Телефон: ${phoneNumber}\n🔷 Форма: ${selectedShape}\n📏 Размер: ${selectedSizeData?.dimensions}`;
         const whatsappUrl = `https://wa.me/996708515052?text=${encodeURIComponent(text)}`;
         window.open(whatsappUrl, "_blank");
-        setMessage({ type: "success", text: "✅ Заказ ийгиликтүү кетти!" });
+        setMessage({ type: "success", text: "✅ Заказ успешно отправлен!" });
         setCustomerName("");
         setPhoneNumber("");
         setUploadedImage(null);
@@ -267,10 +267,10 @@ function LithophanyConstructor() {
           meshRef.current = null;
         }
       } else {
-        setMessage({ type: "error", text: "❌ Ката кетти, кийинчерээк аракет кылыңыз." });
+        setMessage({ type: "error", text: "❌ Произошла ошибка, попробуйте позже." });
       }
     } catch {
-      setMessage({ type: "error", text: "❌ Сервер менен байланышуу мүмкүн эмес." });
+      setMessage({ type: "error", text: "❌ Не удалось связаться с сервером." });
     } finally {
       setLoading(false);
     }
@@ -281,7 +281,7 @@ function LithophanyConstructor() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12">
           
-          {/* Сол жагы: 3D Сцена */}
+          {/* Левая сторона: 3D Сцена */}
           <div className="space-y-8">
             <div 
               ref={containerRef}
@@ -295,10 +295,10 @@ function LithophanyConstructor() {
               className="block w-full py-4 bg-amber-600 hover:bg-amber-700 text-white rounded-full font-bold text-center cursor-pointer shadow-lg shadow-amber-500/30 transition-all"
             >
               <Upload className="w-5 h-5 inline-block mr-2" />
-              📸 Сүрөт жүктөө (3D эффект үчүн)
+              📸 Загрузить фото (для 3D эффекта)
             </label>
             
-            {/* Фигуралар */}
+            {/* Фигуры */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {shapes.map((shape) => (
                 <button 
@@ -320,7 +320,7 @@ function LithophanyConstructor() {
               ))}
             </div>
 
-            {/* Өлчөмдөр */}
+            {/* Размеры */}
             <div className="grid grid-cols-2 gap-4">
               {sizes.map((size) => (
                 <button 
@@ -343,16 +343,16 @@ function LithophanyConstructor() {
             </div>
           </div>
 
-          {/* Оң жагы: Заказ формасы */}
+          {/* Правая сторона: Форма заказа */}
           <div className="lg:sticky lg:top-32 self-start">
             <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl border border-amber-100 shadow-xl">
-              <h3 className="text-2xl font-bold text-amber-800 mb-6">📋 Заказ берүү</h3>
+              <h3 className="text-2xl font-bold text-amber-800 mb-6">📋 Оформление заказа</h3>
               
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-600">👤 Атыңыз</label>
+                  <label className="text-sm font-medium text-gray-600">👤 Ваше имя</label>
                   <input 
-                    placeholder="Аты-жөнүңүз" 
+                    placeholder="Ваше имя" 
                     value={customerName} 
                     onChange={(e) => setCustomerName(e.target.value)} 
                     className="w-full p-4 rounded-xl border border-amber-200 bg-amber-50/50 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all" 
@@ -368,9 +368,9 @@ function LithophanyConstructor() {
                   />
                 </div>
                 <div className="bg-amber-50 p-4 rounded-xl border border-amber-200/50">
-                  <p className="text-sm text-amber-700 font-medium">📋 Заказ маалыматтары:</p>
+                  <p className="text-sm text-amber-700 font-medium">📋 Данные заказа:</p>
                   <p className="text-sm text-amber-600/70">Фигура: {selectedShape}</p>
-                  <p className="text-sm text-amber-600/70">Өлчөм: {selectedSizeData?.dimensions}</p>
+                  <p className="text-sm text-amber-600/70">Размер: {selectedSizeData?.dimensions}</p>
                 </div>
               </div>
               
@@ -388,7 +388,7 @@ function LithophanyConstructor() {
                 className="w-full py-4 bg-amber-600 hover:bg-amber-700 text-white rounded-full font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/30 disabled:opacity-60 disabled:cursor-not-allowed transition-all"
               >
                 <ShoppingCart className="w-5 h-5" />
-                {loading ? "⏳ Жөнөтүлүүдө..." : "📩 Ватсап аркылуу заказ берүү"}
+                {loading ? "⏳ Отправка..." : "📩 Заказать через WhatsApp"}
               </motion.button>
             </div>
           </div>
