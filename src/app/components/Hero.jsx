@@ -2,6 +2,7 @@ import { jsx, jsxs } from "react/jsx-runtime";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ArrowRight, Sparkles } from "lucide-react";
+
 function Hero() {
   return /* @__PURE__ */ jsxs("div", { className: "relative min-h-screen flex items-center justify-center overflow-hidden pt-20", children: [
     /* @__PURE__ */ jsx(
@@ -167,6 +168,7 @@ function Hero() {
     ] })
   ] });
 }
+
 export {
   Hero
 };
