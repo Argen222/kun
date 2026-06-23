@@ -1,5 +1,5 @@
 import { jsx, jsxs } from "react/jsx-runtime";
-import { useState, useEffect } from "react"; // useEffect кошулду
+import { useState, useEffect } from "react"; // useEffect добавлен
 import { motion } from "motion/react";
 import { ProductCard } from "./ProductCard";
 import { SlidersHorizontal } from "lucide-react";
@@ -10,47 +10,47 @@ function CatalogPage({ onAddToCart, onToggleFavorite, favorites }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   
-  // 1. Колубуз менен жазылган массивдин ордуна бош state түзөбүз
+  // 1. Вместо массива, написанного вручную, создаём пустой state
   const [backendProducts, setBackendProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 2. Django API-ден товарларды тартабыз
+  // 2. Получаем товары из Django API
   useEffect(() => {
     fetch("https://kun-backend1.onrender.com/api/products/")
       .then((res) => res.json())
       .then((data) => {
-        // Django'дон келген маалыматты сенин ProductCard күткөндөй форматка ылайыктайбыз
+        // Преобразуем данные из Django в формат, который ожидает ProductCard
         const formattedProducts = data.map((item) => ({
-          id: item.id.toString(), // сенин картаң id-ни string катары күтөт
+          id: item.id.toString(), // твоя карточка ожидает id в виде строки
           name: item.name,
-          price: parseFloat(item.price), // бааны сан түрүнө айлантабыз
-          rating: 5, // Django'до азырынча рейтинг жок, убактылуу 5 бердик
-          reviews: 0, // убактылуу 0 бердик
-          image: item.image, // Django толук даректи берет: https://kun-backend-941z.onrender.com/media/...
-          category: item.category_name // "картинка" же сен кошкон категория аты
+          price: parseFloat(item.price), // преобразуем цену в число
+          rating: 5, // в Django пока нет рейтинга, временно ставим 5
+          reviews: 0, // временно ставим 0
+          image: item.image, // Django отдаёт полный адрес: https://kun-backend-941z.onrender.com/media/...
+          category: item.category_name // "картинка" или добавленная тобой категория
         }));
         
         setBackendProducts(formattedProducts);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Django менен байланышууда ката кетти:", err);
+        console.error("Ошибка при подключении к Django:", err);
         setLoading(false);
       });
   }, []);
 
-  // 3. Эми фильтрлөө иши ушул backend-ден келген товарлар менен иштейт
+  // 3. Теперь фильтрация работает с товарами, полученными из бэкенда
   const filteredProducts = backendProducts.filter((product) => {
     const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
-  // Товарлар жүктөлүп жаткан убакта экранга кооз жазуу чыгарабыз
+  // Пока товары загружаются, показываем красивое сообщение на экране
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-xl text-muted-foreground animate-pulse">Товарлар жүктөлүүдө...</p>
+        <p className="text-xl text-muted-foreground animate-pulse">Загрузка товаров...</p>
       </div>
     );
   }
@@ -63,8 +63,8 @@ function CatalogPage({ onAddToCart, onToggleFavorite, favorites }) {
       className: "space-y-8",
       children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
-          /* @__PURE__ */ jsx("h1", { className: "text-4xl sm:text-5xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Catalog" }) }),
-          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-2xl", children: "Discover our collection of handcrafted lighting and personalized lithophany pieces" })
+          /* @__PURE__ */ jsx("h1", { className: "text-4xl sm:text-5xl font-bold", children: /* @__PURE__ */ jsx("span", { className: "bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent", children: "Каталог" }) }),
+          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-2xl", children: "Откройте для себя нашу коллекцию светильников ручной работы и персонализированных изделий литофании" })
         ] }),
         /* @__PURE__ */ jsxs("div", { className: "flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between", children: [
           /* @__PURE__ */ jsx("div", { className: "flex items-center gap-2 overflow-x-auto pb-2 w-full lg:w-auto", children: categories.map((category) => /* @__PURE__ */ jsx(
@@ -86,7 +86,7 @@ function CatalogPage({ onAddToCart, onToggleFavorite, favorites }) {
               className: "px-6 py-3 rounded-full border border-border hover:bg-muted transition-colors flex items-center gap-2",
               children: [
                 /* @__PURE__ */ jsx(SlidersHorizontal, { className: "w-4 h-4" }),
-                "Filters"
+                "Фильтры"
               ]
             }
           )
