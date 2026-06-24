@@ -33,19 +33,23 @@ function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
 
   // Санын көбөйтүү
   const handleIncrease = (itemId) => {
-    if (onUpdateQuantity) {
-      onUpdateQuantity(itemId, 1);
-    } else {
-      console.error("onUpdateQuantity функциясы берилбеген!");
+    const item = cart.find(item => item.id === itemId);
+    if (item) {
+      const newQuantity = item.quantity + 1;
+      onUpdateQuantity(itemId, newQuantity);
     }
   };
 
   // Санын азайтуу
   const handleDecrease = (itemId) => {
-    if (onUpdateQuantity) {
-      onUpdateQuantity(itemId, -1);
-    } else {
-      console.error("onUpdateQuantity функциясы берилбеген!");
+    const item = cart.find(item => item.id === itemId);
+    if (item) {
+      if (item.quantity > 1) {
+        const newQuantity = item.quantity - 1;
+        onUpdateQuantity(itemId, newQuantity);
+      } else {
+        onRemoveItem(itemId);
+      }
     }
   };
 
