@@ -29,12 +29,18 @@ function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
     clearCart();
   };
 
+  // ✅ Санын көбөйтүү
   const handleIncrease = (itemId) => {
-    onUpdateQuantity(itemId, 1);
+    if (onUpdateQuantity) {
+      onUpdateQuantity(itemId, 1);
+    }
   };
 
+  // ✅ Санын азайтуу
   const handleDecrease = (itemId) => {
-    onUpdateQuantity(itemId, -1);
+    if (onUpdateQuantity) {
+      onUpdateQuantity(itemId, -1);
+    }
   };
 
   return (
@@ -48,45 +54,45 @@ function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
           {/* Список товаров */}
           <div className="md:col-span-2 space-y-4">
             {cart.map(item => (
-              <div key={item.id} className="flex items-center gap-6 p-6 border border-border rounded-2xl bg-card shadow-sm">
+              <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-6 border border-border rounded-2xl bg-card shadow-sm">
                 {/* Изображение */}
                 <img 
                   src={item.image || "https://via.placeholder.com/150"} 
                   alt={item.name} 
-                  className="w-24 h-24 object-cover rounded-xl"
+                  className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl flex-shrink-0"
                 />
                 
                 {/* Информация о товаре */}
-                <div className="flex-grow">
-                  <h3 className="text-xl font-bold">{item.name}</h3>
+                <div className="flex-grow w-full sm:w-auto">
+                  <h3 className="text-lg sm:text-xl font-bold">{item.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">Количество: {item.quantity}</p>
                   <p className="font-bold text-lg mt-2">сом {(item.price * item.quantity).toFixed(2)}</p>
                 </div>
 
-                {/* Кнопки + и - */}
-                <div className="flex items-center gap-2">
+                {/* Кнопки + и - (ылдый жайгаштырылды) */}
+                <div className="flex items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
                   <button 
                     onClick={() => handleDecrease(item.id)}
-                    className="p-2 rounded-full border border-border hover:bg-muted transition"
+                    className="p-2 rounded-full border border-border hover:bg-muted transition w-10 h-10 flex items-center justify-center"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="w-8 text-center font-semibold">{item.quantity}</span>
+                  <span className="w-10 text-center font-semibold text-lg">{item.quantity}</span>
                   <button 
                     onClick={() => handleIncrease(item.id)}
-                    className="p-2 rounded-full border border-border hover:bg-muted transition"
+                    className="p-2 rounded-full border border-border hover:bg-muted transition w-10 h-10 flex items-center justify-center"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
+                  
+                  {/* Удаление */}
+                  <button 
+                    onClick={() => onRemoveItem(item.id)} 
+                    className="p-2 hover:bg-destructive/10 text-destructive rounded-full ml-2"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
                 </div>
-
-                {/* Удаление */}
-                <button 
-                  onClick={() => onRemoveItem(item.id)} 
-                  className="p-2 hover:bg-destructive/10 text-destructive rounded-full"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
               </div>
             ))}
           </div>
