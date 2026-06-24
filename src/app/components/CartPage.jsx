@@ -52,7 +52,7 @@ function CartPage({ cart, onRemoveItem, clearCart }) {
                 <div className="flex-grow">
                   <h3 className="text-xl font-bold">{item.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">Количество: {item.quantity}</p>
-                  <p className="font-bold text-lg mt-2">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="font-bold text-lg mt-2">сом{(item.price * item.quantity).toFixed(2)}</p>
                 </div>
 
                 {/* Удаление */}
@@ -71,7 +71,7 @@ function CartPage({ cart, onRemoveItem, clearCart }) {
             <textarea className="w-full p-3 border rounded-lg bg-background" placeholder="Ваш полный адрес" onChange={e => setAddress(e.target.value)} />
             
             <div className="pt-4 border-t border-border">
-              <p className="text-2xl font-bold mb-4">Итого: ${total.toFixed(2)}</p>
+              <p className="text-2xl font-bold mb-4">Итого: сом{total.toFixed(2)}</p>
               <button 
                 onClick={handleOrder}
                 className="w-full bg-primary text-white p-4 rounded-xl font-bold hover:opacity-90 transition-all"
