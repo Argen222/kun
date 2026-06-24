@@ -8,7 +8,7 @@ function Navigation({ cartCount, favoritesCount, theme, onThemeToggle }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navItems = [
-    { name: "Главная", path: "/" },
+    { name: "Главная123", path: "/" },
     { name: "Каталог", path: "/catalog" },
     { name: "Конструктор Литофании", path: "/constructor" },
     { name: "О нас", path: "/about" },
