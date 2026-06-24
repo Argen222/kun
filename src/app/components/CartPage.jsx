@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Trash2 } from "lucide-react";
+import { Trash2, Plus, Minus } from "lucide-react";
 
-function CartPage({ cart, onRemoveItem, clearCart }) {
+function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -22,11 +22,21 @@ function CartPage({ cart, onRemoveItem, clearCart }) {
                     `Товары: ${cartDetails}\n` +
                     `Общая сумма: сом ${total.toFixed(2)}`;
 
-    const phoneNumber = "996770150025"; // Твой номер WhatsApp
+    const phoneNumber = "996770150025";
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
     window.open(url, "_blank");
     clearCart();
+  };
+
+  // Санын көбөйтүү
+  const handleIncrease = (itemId) => {
+    onUpdateQuantity(itemId, 1);
+  };
+
+  // Санын азайтуу
+  const handleDecrease = (itemId) => {
+    onUpdateQuantity(itemId, -1);
   };
 
   return (
@@ -55,8 +65,28 @@ function CartPage({ cart, onRemoveItem, clearCart }) {
                   <p className="font-bold text-lg mt-2">сом {(item.price * item.quantity).toFixed(2)}</p>
                 </div>
 
+                {/* Кнопки + и - для изменения количества */}
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => handleDecrease(item.id)}
+                    className="p-2 rounded-full border border-border hover:bg-muted transition"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span className="w-8 text-center font-semibold">{item.quantity}</span>
+                  <button 
+                    onClick={() => handleIncrease(item.id)}
+                    className="p-2 rounded-full border border-border hover:bg-muted transition"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+
                 {/* Удаление */}
-                <button onClick={() => onRemoveItem(item.id)} className="p-2 hover:bg-destructive/10 text-destructive rounded-full">
+                <button 
+                  onClick={() => onRemoveItem(item.id)} 
+                  className="p-2 hover:bg-destructive/10 text-destructive rounded-full"
+                >
                   <Trash2 className="w-5 h-5" />
                 </button>
               </div>
@@ -66,9 +96,21 @@ function CartPage({ cart, onRemoveItem, clearCart }) {
           {/* Форма оформления заказа */}
           <div className="bg-card p-6 rounded-2xl border border-border h-fit space-y-4 shadow-sm">
             <h2 className="font-bold text-xl">Оформление заказа</h2>
-            <input className="w-full p-3 border rounded-lg bg-background" placeholder="Ваше имя" onChange={e => setName(e.target.value)} />
-            <input className="w-full p-3 border rounded-lg bg-background" placeholder="Ваш номер телефона" onChange={e => setPhone(e.target.value)} />
-            <textarea className="w-full p-3 border rounded-lg bg-background" placeholder="Ваш полный адрес" onChange={e => setAddress(e.target.value)} />
+            <input 
+              className="w-full p-3 border rounded-lg bg-background" 
+              placeholder="Ваше имя" 
+              onChange={e => setName(e.target.value)} 
+            />
+            <input 
+              className="w-full p-3 border rounded-lg bg-background" 
+              placeholder="Ваш номер телефона" 
+              onChange={e => setPhone(e.target.value)} 
+            />
+            <textarea 
+              className="w-full p-3 border rounded-lg bg-background" 
+              placeholder="Ваш полный адрес" 
+              onChange={e => setAddress(e.target.value)} 
+            />
             
             <div className="pt-4 border-t border-border">
               <p className="text-2xl font-bold mb-4">Итого: сом {total.toFixed(2)}</p>
