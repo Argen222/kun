@@ -67,7 +67,7 @@ function ProductModal({ product, onClose, onAddToCart, onToggleFavorite, isFavor
             </div>
 
             <div className="space-y-3">
-              <p className="text-3xl font-bold text-amber-500">${product.price}</p>
+              <p className="text-3xl font-bold text-amber-500">{product.price} сом</p>
 
               <div className="flex gap-3">
                 <button
