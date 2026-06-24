@@ -6,8 +6,10 @@ function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
 
+  // Жалпы сумманы эсептөө
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  // WhatsApp аркылуу заказ жөнөтүү
   const handleOrder = () => {
     if (!name || !phone || !address) {
       alert("Заполните все поля!");
@@ -29,17 +31,21 @@ function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
     clearCart();
   };
 
-  // ✅ Санын көбөйтүү
+  // Санын көбөйтүү
   const handleIncrease = (itemId) => {
     if (onUpdateQuantity) {
       onUpdateQuantity(itemId, 1);
+    } else {
+      console.error("onUpdateQuantity функциясы берилбеген!");
     }
   };
 
-  // ✅ Санын азайтуу
+  // Санын азайтуу
   const handleDecrease = (itemId) => {
     if (onUpdateQuantity) {
       onUpdateQuantity(itemId, -1);
+    } else {
+      console.error("onUpdateQuantity функциясы берилбеген!");
     }
   };
 
@@ -69,7 +75,7 @@ function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
                   <p className="font-bold text-lg mt-2">сом {(item.price * item.quantity).toFixed(2)}</p>
                 </div>
 
-                {/* Кнопки + и - (ылдый жайгаштырылды) */}
+                {/* Кнопки + и - */}
                 <div className="flex items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
                   <button 
                     onClick={() => handleDecrease(item.id)}
