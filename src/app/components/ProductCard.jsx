@@ -96,7 +96,7 @@ function ProductCard({
             ] })
           ] }),
           /* @__PURE__ */ jsx("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ jsxs("span", { className: "text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent", children: [
-            "$",
+            "сом",
             price
           ] }) })
         ] })
