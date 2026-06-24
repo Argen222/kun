@@ -6,65 +6,11 @@ function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
 
-  // 📱 Телефон номерин форматтоо функциясы
-  const formatPhoneNumber = (value) => {
-    // Бардык сан эмес символдорду алып салуу
-    const cleaned = value.replace(/\D/g, '');
-    
-    // Эгерде 996 менен башталса, аны алып салуу (кайталанып калбаш үчүн)
-    let number = cleaned;
-    if (number.startsWith('996')) {
-      number = number.slice(3);
-    }
-    
-    // Максимум 9 сан (70X XXX XXX)
-    if (number.length > 9) {
-      number = number.slice(0, 9);
-    }
-    
-    // Форматташтыруу: 70X XXX XXX
-    let formatted = '+996 ';
-    if (number.length > 0) {
-      formatted += number.slice(0, 3);
-    }
-    if (number.length > 3) {
-      formatted += ' ' + number.slice(3, 6);
-    }
-    if (number.length > 6) {
-      formatted += ' ' + number.slice(6, 9);
-    }
-    
-    return formatted;
-  };
-
-  // Телефон өзгөргөндө
-  const handlePhoneChange = (e) => {
-    const rawValue = e.target.value;
-    // Эгерде колдонуучу +996 деп баштаса, аны алып салуу
-    let cleaned = rawValue.replace(/\D/g, '');
-    if (cleaned.startsWith('996')) {
-      cleaned = cleaned.slice(3);
-    }
-    // Максимум 9 сан
-    if (cleaned.length > 9) {
-      cleaned = cleaned.slice(0, 9);
-    }
-    // Форматтап коюу
-    setPhone(formatPhoneNumber(cleaned));
-  };
-
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleOrder = () => {
     if (!name || !phone || !address) {
       alert("Заполните все поля!");
-      return;
-    }
-
-    // Телефондон бардык сандарды алып, номерди тазалоо
-    const cleanPhone = phone.replace(/\D/g, '');
-    if (cleanPhone.length < 12) {
-      alert("Телефон номери туура эмес! Мисал: +996 700 123 456");
       return;
     }
 
@@ -99,21 +45,25 @@ function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
         <p className="text-muted-foreground">Корзина пуста.</p>
       ) : (
         <div className="grid md:grid-cols-3 gap-8">
+          {/* Список товаров */}
           <div className="md:col-span-2 space-y-4">
             {cart.map(item => (
               <div key={item.id} className="flex items-center gap-6 p-6 border border-border rounded-2xl bg-card shadow-sm">
+                {/* Изображение */}
                 <img 
                   src={item.image || "https://via.placeholder.com/150"} 
                   alt={item.name} 
                   className="w-24 h-24 object-cover rounded-xl"
                 />
                 
+                {/* Информация о товаре */}
                 <div className="flex-grow">
                   <h3 className="text-xl font-bold">{item.name}</h3>
                   <p className="text-sm text-muted-foreground mt-1">Количество: {item.quantity}</p>
                   <p className="font-bold text-lg mt-2">сом {(item.price * item.quantity).toFixed(2)}</p>
                 </div>
 
+                {/* Кнопки + и - */}
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={() => handleDecrease(item.id)}
@@ -130,6 +80,7 @@ function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
                   </button>
                 </div>
 
+                {/* Удаление */}
                 <button 
                   onClick={() => onRemoveItem(item.id)} 
                   className="p-2 hover:bg-destructive/10 text-destructive rounded-full"
@@ -140,20 +91,24 @@ function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
             ))}
           </div>
 
+          {/* Форма оформления заказа */}
           <div className="bg-card p-6 rounded-2xl border border-border h-fit space-y-4 shadow-sm">
             <h2 className="font-bold text-xl">Оформление заказа</h2>
+            
             <input 
               className="w-full p-3 border rounded-lg bg-background" 
               placeholder="Ваше имя" 
               value={name}
               onChange={e => setName(e.target.value)} 
             />
+            
             <input 
               className="w-full p-3 border rounded-lg bg-background" 
-              placeholder="+996 700 123 456" 
+              placeholder="Телефон (например: 0700 123 456)" 
               value={phone}
-              onChange={handlePhoneChange} 
+              onChange={e => setPhone(e.target.value)} 
             />
+            
             <textarea 
               className="w-full p-3 border rounded-lg bg-background" 
               placeholder="Ваш полный адрес" 
