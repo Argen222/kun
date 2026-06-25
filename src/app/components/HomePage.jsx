@@ -4,20 +4,17 @@ import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ArrowRight, Sparkles, Heart, Award, Zap } from "lucide-react";
 import { ProductCard } from "./ProductCard";
-import { CatalogPage } from "./CatalogPage"; // ✅ CatalogPage импортирован
-
-// ❌ ЭТОТ МАССИВ УДАЛИТЬ (featuredProducts)
-// ❌ ЭТОТ МАССИВ УДАЛИТЬ (features) - если нужно, оставьте
+import { CatalogPage } from "./CatalogPage";
 
 const features = [
-  // ... (если хотите, эту секцию можно оставить)
+  // ... (ваши фичи)
 ];
 
 function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
   return /* @__PURE__ */ jsxs("div", { children: [
     /* @__PURE__ */ jsx(Hero, {}),
 
-    // === ДРУГИЕ СЕКЦИИ (без изменений) ===
+    // === СЕКЦИЯ С ФИЧАМИ ===
     /* @__PURE__ */ jsx("section", { className: "py-20 bg-muted/30", children: /* @__PURE__ */ jsx("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsx("div", { className: "grid sm:grid-cols-2 lg:grid-cols-4 gap-8", children: features.map((feature, index) => {
       const Icon = feature.icon;
       return /* @__PURE__ */ jsxs(
@@ -45,14 +42,14 @@ function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
       );
     }) }) }) }),
 
-    // === СЕКЦИЯ КАТАЛОГА (теперь вызывается CatalogPage) ===
+    // === СЕКЦИЯ КАТАЛОГА ===
     /* @__PURE__ */ jsx(CatalogPage, {
       onAddToCart: onAddToCart,
       onToggleFavorite: onToggleFavorite,
       favorites: favorites
     }),
 
-    // === СЕКЦИЯ ЛИТОФАНИИ (без изменений) ===
+    // === СЕКЦИЯ ЛИТОФАНИИ С ИЗОБРАЖЕНИЕМ ===
     /* @__PURE__ */ jsx("section", { className: "py-20 bg-gradient-to-br from-primary/10 via-accent/10 to-primary/10", children: /* @__PURE__ */ jsx("div", { className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", children: /* @__PURE__ */ jsxs("div", { className: "grid lg:grid-cols-2 gap-12 items-center", children: [
       /* @__PURE__ */ jsxs(
         motion.div,
@@ -106,29 +103,19 @@ function HomePage({ onAddToCart, onToggleFavorite, favorites }) {
           children: /* @__PURE__ */ jsx(
             "div",
             {
-              className: "rounded-3xl overflow-hidden",
+              className: "rounded-3xl overflow-hidden relative",
               style: {
                 background: "linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(212, 165, 116, 0.1) 100%)",
                 boxShadow: "0 8px 32px 0 rgba(212, 165, 116, 0.2)"
               },
-              children: /* @__PURE__ */ jsx("div", { className: "absolute inset-0 flex items-center justify-center p-12", children: /* @__PURE__ */ jsx(
-                motion.div,
+              children: /* @__PURE__ */ jsx(
+                "img",
                 {
-                  animate: {
-                    boxShadow: [
-                      "0 0 60px rgba(255, 179, 71, 0.4)",
-                      "0 0 100px rgba(255, 179, 71, 0.6)",
-                      "0 0 60px rgba(255, 179, 71, 0.4)"
-                    ]
-                  },
-                  transition: {
-                    duration: 4,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  },
-                  className: "w-full h-full rounded-2xl bg-gradient-to-br from-accent via-primary to-accent"
+                  src: "/img/lito.jpeg",
+                  alt: "Литофания - пример работы",
+                  className: "w-full h-full object-cover"
                 }
-              ) })
+              )
             }
           )
         }
