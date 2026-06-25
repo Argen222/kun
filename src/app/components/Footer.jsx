@@ -82,7 +82,7 @@ function Footer() {
         /* @__PURE__ */ jsxs("div", { className: "space-y-3 text-muted-foreground", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-3", children: [
             /* @__PURE__ */ jsx(MapPin, { className: "w-5 h-5 mt-0.5 flex-shrink-0" }),
-            /* @__PURE__ */ jsx("p", { children: "Ош шаары, Осконалиева көчөсү 1" })
+            /* @__PURE__ */ jsx("p", { children: "Город Ош, Осконалиева1" })
           ] }),
           /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
             /* @__PURE__ */ jsx(Mail, { className: "w-5 h-5 flex-shrink-0" }),
