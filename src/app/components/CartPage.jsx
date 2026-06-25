@@ -17,13 +17,13 @@ function CartPage({ cart, onRemoveItem, clearCart, onUpdateQuantity }) {
     }
 
     const cartDetails = cart.map(item => `${item.name} (x${item.quantity})`).join(", ");
-    const message = `Здравствуйте! Новый заказ:\n\n` +
+    const message = `«Здравствуйте! Благодарим вас за оформление заказа. Мы приняли его в работу:\n\n` +
                     `Клиент: ${name}\n` +
-                    `Телефон: ${phone}\n` +
-                    `Адрес: ${address}\n\n` +
-                    `Товары: ${cartDetails}\n` +
-                    `Общая сумма: сом ${total.toFixed(2)}`;
-
+                    `Контактный телефон:: ${phone}\n` +
+                    `Адрес доставки: ${address}\n\n` +
+                    `Состав заказа: ${cartDetails}\n` +
+                    `Итоговая сумма: сом ${total.toFixed(2)}`;
+                    `Наш менеджер свяжется с вами в ближайшее время для подтверждения.»\n\n` +
     const phoneNumber = "996770150025";
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
