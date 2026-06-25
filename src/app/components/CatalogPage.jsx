@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { Heart, ShoppingCart, X, Star, Package } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Heart, ShoppingCart, X, Star, Package, RefreshCw } from "lucide-react";
 
 const API = "https://kun-backend1.onrender.com/api";
 
+// ========== ProductModal компоненти ==========
 function ProductModal({ product, onClose, onAddToCart, onToggleFavorite, isFavorite }) {
   if (!product) return null;
 
@@ -100,29 +101,52 @@ function ProductModal({ product, onClose, onAddToCart, onToggleFavorite, isFavor
   );
 }
 
+// ========== CatalogPage компоненти ==========
 function CatalogPage({ onAddToCart, onToggleFavorite, favorites = [] }) {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("Все");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [search, setSearch] = useState("");
+  const [retrying, setRetrying] = useState(false);
 
-  useEffect(() => {
-    // Товары
-    fetch(`${API}/products`)
-      .then(res => res.json())
-      .then(data => {
-        setProducts(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+  // Маалыматтарды жүктөө функциясы
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      setRetrying(true);
 
-    // Категории
-    fetch(`${API}/products/categories`)
-      .then(res => res.json())
-      .then(data => setCategories(Array.isArray(data) ? data : []));
+      // Параллель сурамдар (экөө тең бир убакта)
+      const [productsRes, categoriesRes] = await Promise.all([
+        fetch(`${API}/products`),
+        fetch(`${API}/products/categories`)
+      ]);
+
+      if (!productsRes.ok || !categoriesRes.ok) {
+        throw new Error("Ошибка загрузки данных с сервера");
+      }
+
+      const productsData = await productsRes.json();
+      const categoriesData = await categoriesRes.json();
+
+      setProducts(Array.isArray(productsData) ? productsData : []);
+      setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+    } catch (err) {
+      console.error("Ошибка загрузки:", err);
+      setError("Не удалось загрузить товары. Проверьте подключение к интернету.");
+    } finally {
+      setLoading(false);
+      setRetrying(false);
+    }
   }, []);
+
+  // Компонент биринчи жолу жүктөлгөндө
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   // Фильтрация
   const filtered = products.filter(p => {
@@ -131,17 +155,45 @@ function CatalogPage({ onAddToCart, onToggleFavorite, favorites = [] }) {
     return matchCat && matchSearch;
   });
 
+  // ========== ЖҮКТӨӨ ЭКРАНЫ ==========
   if (loading) {
     return (
       <div className="min-h-screen pt-32 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-muted-foreground">Загрузка товаров...</p>
+          <div className="w-16 h-16 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-muted-foreground text-lg">Загрузка товаров...</p>
+          <p className="text-sm text-muted-foreground/70">Пожалуйста, подождите</p>
         </div>
       </div>
     );
   }
 
+  // ========== КАТА ЭКРАНЫ ==========
+  if (error) {
+    return (
+      <div className="min-h-screen pt-32 flex items-center justify-center">
+        <div className="text-center space-y-6 max-w-md">
+          <div className="w-20 h-20 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto">
+            <Package className="w-10 h-10 text-red-400" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold mb-2">Ошибка загрузки</h2>
+            <p className="text-muted-foreground">{error}</p>
+          </div>
+          <button
+            onClick={fetchData}
+            disabled={retrying}
+            className="px-6 py-3 bg-amber-500 text-white rounded-xl font-medium hover:bg-amber-600 transition flex items-center gap-2 mx-auto disabled:opacity-50"
+          >
+            <RefreshCw className={`w-5 h-5 ${retrying ? "animate-spin" : ""}`} />
+            {retrying ? "Повторяем..." : "Повторить загрузку"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ========== НЕГИЗГИ КАТАЛОГ ==========
   return (
     <div className="min-h-screen pt-32 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -205,6 +257,7 @@ function CatalogPage({ onAddToCart, onToggleFavorite, favorites = [] }) {
                         src={product.image_url}
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
@@ -275,4 +328,4 @@ function CatalogPage({ onAddToCart, onToggleFavorite, favorites = [] }) {
 }
 
 export default CatalogPage;
-export { CatalogPage };
+export { CatalogPage, ProductModal };
