@@ -85,8 +85,8 @@ function ContactPage() {
                       /* @__PURE__ */ jsxs("div", { children: [
                         /* @__PURE__ */ jsx("h4", { className: "font-semibold mb-1", children: "Часы работы" }),
                         /* @__PURE__ */ jsxs("div", { className: "text-muted-foreground space-y-1", children: [
-                          /* @__PURE__ */ jsx("p", { children: "Понедельник - Пятница: 09:00 - 18:00" }),
-                          /* @__PURE__ */ jsx("p", { children: "Суббота: 10:00 - 16:00" }),
+                          /* @__PURE__ */ jsx("p", { children: "Понедельник - Пятница: 08:00 - 18:00" }),
+                          /* @__PURE__ */ jsx("p", { children: "Суббота: 10:00 - 17:00" }),
                           /* @__PURE__ */ jsx("p", { children: "Воскресенье: Выходной" })
                         ] })
                       ] })
