@@ -117,7 +117,7 @@ function AboutPage() {
         }) }),
         /* @__PURE__ */ jsxs("div", { className: "bg-gradient-to-br from-primary/10 via-accent/10 to-primary/10 rounded-3xl p-8 md:p-12 text-center space-y-6", children: [
           /* @__PURE__ */ jsx("h2", { className: "text-3xl font-bold", children: "Наша миссия" }),
-          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed", children: "Привносить тепло, красоту и индивидуальность в каждый дом через освещение и литофанию. Мы стремимся сохранять ваши самые ценные воспоминания в форме, которая будет радовать каждый день, создавая атмосферу уюта и ностальгии, которая сохранится на всю жизнь." })
+          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed", children: "Приносить тепло, красоту и индивидуальность в каждый дом через освещение и литофанию. Мы стремимся сохранять ваши самые ценные воспоминания в форме, которая будет радовать каждый день, создавая атмосферу уюта и ностальгии, которая сохранится на всю жизнь." })
         ] })
       ]
     }
