@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion } from 'motion/react';
-import { Upload, X, ChevronRight, RotateCw, Zap, Sun, Moon } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Upload, X, ChevronRight, RotateCw, Zap, Sun, Moon, Menu, Camera, Settings, ShoppingCart, Image as ImageIcon } from 'lucide-react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -11,24 +11,18 @@ function LithophanyLamp({
   lightOn, 
   brightness, 
   contrast, 
-  warmth 
+  warmth,
+  autoRotate,
+  onResetCamera
 }) {
   const containerRef = useRef(null);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const rendererRef = useRef(null);
-  const cylinderRef = useRef(null);
-  const innerLightRef = useRef(null);
-  const glowCylRef = useRef(null);
-  const poolRef = useRef(null);
-  const controlsRef = useRef(null);
   const materialRef = useRef(null);
+  const controlsRef = useRef(null);
   const groupRef = useRef(null);
 
-  // Текстураларды сактоо
-  const texturesRef = useRef({ map1: null, map2: null });
-
-  // Константалар
   const R = 1.3;
   const H = 5.0;
   const DEFAULT_CAM = new THREE.Vector3(0, 1.2, 9.5);
@@ -37,12 +31,10 @@ function LithophanyLamp({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Сцена
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0d0f14);
     sceneRef.current = scene;
 
-    // Камера
     const camera = new THREE.PerspectiveCamera(
       40,
       containerRef.current.clientWidth / containerRef.current.clientHeight,
@@ -52,8 +44,10 @@ function LithophanyLamp({
     camera.position.copy(DEFAULT_CAM);
     cameraRef.current = camera;
 
-    // Рендерер
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: true,
+      alpha: true 
+    });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -61,39 +55,32 @@ function LithophanyLamp({
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // Орбитальное управление
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
-    controls.minDistance = 5;
-    controls.maxDistance = 16;
+    controls.minDistance = 4;
+    controls.maxDistance = 14;
     controls.target.set(0, 0.6, 0);
     controls.autoRotate = true;
     controls.autoRotateSpeed = 1.4;
     controls.maxPolarAngle = Math.PI * 0.92;
     controlsRef.current = controls;
 
-    // Освещение комнаты
     scene.add(new THREE.AmbientLight(0x4a5260, 0.6));
     const keyLight = new THREE.DirectionalLight(0x9fb0c8, 0.5);
     keyLight.position.set(4, 6, 5);
     scene.add(keyLight);
 
-    // Внутренний свет лампы
     const innerLight = new THREE.PointLight(0xffd9a0, 0, 30, 1.6);
     innerLight.position.set(0, 0.4, 0);
     scene.add(innerLight);
-    innerLightRef.current = innerLight;
 
-    // Группа для лампы
     const group = new THREE.Group();
     scene.add(group);
     groupRef.current = group;
 
-    // Цилиндр-литофания
     const cylGeo = new THREE.CylinderGeometry(R, R, H, 320, 320, true);
 
-    // Шейдер материалы
     const litoMaterial = new THREE.ShaderMaterial({
       side: THREE.DoubleSide,
       transparent: false,
@@ -227,10 +214,8 @@ function LithophanyLamp({
     const cylinder = new THREE.Mesh(cylGeo, litoMaterial);
     cylinder.position.y = 0.0;
     group.add(cylinder);
-    cylinderRef.current = cylinder;
     materialRef.current = litoMaterial;
 
-    // Внутреннее свечение
     const glowGeo = new THREE.CylinderGeometry(R * 0.96, R * 0.96, H * 0.99, 64, 1, true);
     const glowMat = new THREE.MeshBasicMaterial({
       color: 0xffe2b0,
@@ -242,9 +227,7 @@ function LithophanyLamp({
     });
     const glowCyl = new THREE.Mesh(glowGeo, glowMat);
     group.add(glowCyl);
-    glowCylRef.current = glowCyl;
 
-    // Крышки
     const baseMat = new THREE.MeshStandardMaterial({ 
       color: 0x1b1d22, 
       roughness: 0.5, 
@@ -259,7 +242,6 @@ function LithophanyLamp({
     const CAP_R = R + 0.07 + 0.03;
     const CAP_OVERLAP = 0.06;
 
-    // Нижняя крышка
     const base = new THREE.Mesh(
       new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64),
       baseMat
@@ -275,7 +257,6 @@ function LithophanyLamp({
     baseBottom.position.y = -H / 2 + CAP_OVERLAP - CAP_H;
     group.add(baseBottom);
 
-    // Верхняя крышка
     const cap = new THREE.Mesh(
       new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64),
       baseMat
@@ -293,7 +274,6 @@ function LithophanyLamp({
 
     group.position.y = 0.55;
 
-    // Пол
     const floorMat = new THREE.MeshStandardMaterial({
       color: 0x16181d,
       roughness: 0.85,
@@ -304,7 +284,6 @@ function LithophanyLamp({
     floor.position.y = -H / 2 + group.position.y - 0.44;
     scene.add(floor);
 
-    // Лужа света
     const poolMat = new THREE.MeshBasicMaterial({
       color: 0xffcf8a,
       transparent: true,
@@ -316,9 +295,7 @@ function LithophanyLamp({
     pool.rotation.x = -Math.PI / 2;
     pool.position.y = floor.position.y + 0.01;
     scene.add(pool);
-    poolRef.current = pool;
 
-    // Заглушка текстуры
     const ph = makePlaceholder();
     litoMaterial.uniforms.map.value = ph;
     litoMaterial.uniforms.map2.value = ph;
@@ -327,8 +304,6 @@ function LithophanyLamp({
     litoMaterial.uniforms.imgAR1.value = 600 / 900;
     litoMaterial.uniforms.imgAR2.value = 600 / 900;
 
-    // Анимация
-    const clock = new THREE.Clock();
     const animate = () => {
       requestAnimationFrame(animate);
       
@@ -358,7 +333,6 @@ function LithophanyLamp({
     };
     animate();
 
-    // Resize
     const handleResize = () => {
       if (!containerRef.current) return;
       const width = containerRef.current.clientWidth;
@@ -378,7 +352,6 @@ function LithophanyLamp({
     };
   }, []);
 
-  // Заглушка текстурасы
   function makePlaceholder() {
     const c = document.createElement('canvas');
     c.width = 600;
@@ -401,7 +374,6 @@ function LithophanyLamp({
     return t;
   }
 
-  // Изображение жүктөө
   const loadImageTexture = useCallback((url, slot) => {
     const loader = new THREE.TextureLoader();
     loader.load(url, (tex) => {
@@ -416,64 +388,81 @@ function LithophanyLamp({
           materialRef.current.uniforms.map2.value = tex;
           materialRef.current.uniforms.hasImage2.value = 1.0;
           materialRef.current.uniforms.imgAR2.value = ar;
-          texturesRef.current.map2 = tex;
         } else {
           materialRef.current.uniforms.map.value = tex;
           materialRef.current.uniforms.hasImage.value = 1.0;
           materialRef.current.uniforms.imgAR1.value = ar;
-          texturesRef.current.map1 = tex;
         }
       }
     });
   }, []);
 
-  // Сүрөт жүктөлгөндө
   useEffect(() => {
-    if (uploadedImage1) {
-      loadImageTexture(uploadedImage1, 1);
-    }
+    if (uploadedImage1) loadImageTexture(uploadedImage1, 1);
   }, [uploadedImage1, loadImageTexture]);
 
   useEffect(() => {
-    if (uploadedImage2) {
-      loadImageTexture(uploadedImage2, 2);
-    }
+    if (uploadedImage2) loadImageTexture(uploadedImage2, 2);
   }, [uploadedImage2, loadImageTexture]);
 
-  // Жарыкты күйгүзүү/өчүрүү
   useEffect(() => {
     if (materialRef.current) {
       materialRef.current.uniforms.lightOn.value = lightOn ? 1.0 : 0.0;
     }
   }, [lightOn]);
 
-  // Жарыктык
   useEffect(() => {
     if (materialRef.current) {
       materialRef.current.uniforms.brightness.value = brightness;
     }
   }, [brightness]);
 
-  // Контраст
   useEffect(() => {
     if (materialRef.current) {
       materialRef.current.uniforms.contrast.value = contrast;
     }
   }, [contrast]);
 
-  // Жылуулук
   useEffect(() => {
     if (materialRef.current) {
       materialRef.current.uniforms.warmth.value = warmth;
     }
   }, [warmth]);
 
+  useEffect(() => {
+    if (controlsRef.current) {
+      controlsRef.current.autoRotate = autoRotate;
+    }
+  }, [autoRotate]);
+
+  const handleResetCamera = useCallback(() => {
+    if (cameraRef.current && controlsRef.current) {
+      cameraRef.current.position.copy(DEFAULT_CAM);
+      controlsRef.current.target.set(0, 0.6, 0);
+      controlsRef.current.update();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (onResetCamera) {
+      onResetCamera.current = handleResetCamera;
+    }
+  }, [handleResetCamera, onResetCamera]);
+
   return (
-    <div ref={containerRef} className="w-full aspect-square rounded-2xl overflow-hidden shadow-2xl" />
+    <div 
+      ref={containerRef} 
+      className="w-full rounded-2xl overflow-hidden shadow-2xl"
+      style={{ 
+        aspectRatio: '1/1',
+        maxHeight: 'calc(100vh - 200px)',
+        minHeight: '300px'
+      }} 
+    />
   );
 }
 
-// ========== Негизги Литофания Конструктору ==========
+// ========== Негизги Конструктор ==========
 function LithophanyConstructor() {
   const [uploadedImage1, setUploadedImage1] = useState(null);
   const [uploadedImage2, setUploadedImage2] = useState(null);
@@ -488,9 +477,11 @@ function LithophanyConstructor() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
-  const [showPanel, setShowPanel] = useState(true);
+  const [showPanel, setShowPanel] = useState(false);
+  const [activeTab, setActiveTab] = useState('upload'); // upload, settings, order
+  
+  const resetCameraRef = useRef(null);
 
-  // Сүрөт жүктөө
   const handleImageUpload = (e, slot) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -508,15 +499,14 @@ function LithophanyConstructor() {
     }
   };
 
-  // Заказ жөнөтүү
   const handleSubmitOrder = async (e) => {
     e.preventDefault();
     if (!customerName || !phoneNumber) {
-      setMessage({ type: "error", text: "Введите ваше имя и номер телефона!" });
+      setMessage({ type: "error", text: "Введите имя и номер телефона!" });
       return;
     }
     if (!imageFile1 && !imageFile2) {
-      setMessage({ type: "error", text: "Пожалуйста, загрузите хотя бы одно изображение!" });
+      setMessage({ type: "error", text: "Загрузите хотя бы одно фото!" });
       return;
     }
 
@@ -534,228 +524,299 @@ function LithophanyConstructor() {
       });
 
       if (response.ok) {
-        const text = `🕯️ Новый заказ литофании!\n\n👤 Клиент: ${customerName}\n📞 Телефон: ${phoneNumber}\n💡 Свет: ${lightOn ? 'Вкл' : 'Выкл'}`;
+        const text = `🕯️ Новый заказ литофании!\n\n👤 Клиент: ${customerName}\n📞 Телефон: ${phoneNumber}`;
         const whatsappUrl = `https://wa.me/996708515052?text=${encodeURIComponent(text)}`;
         window.open(whatsappUrl, "_blank");
-        setMessage({ type: "success", text: "✅ Заказ успешно отправлен!" });
+        setMessage({ type: "success", text: "✅ Заказ отправлен!" });
         setCustomerName("");
         setPhoneNumber("");
       } else {
-        setMessage({ type: "error", text: "❌ Произошла ошибка, попробуйте позже." });
+        setMessage({ type: "error", text: "❌ Ошибка, попробуйте позже." });
       }
     } catch {
-      setMessage({ type: "error", text: "❌ Не удалось связаться с сервером." });
+      setMessage({ type: "error", text: "❌ Нет связи с сервером." });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <div className="max-w-7xl mx-auto px-4">
-        
-        {/* Мобильный переключатель панели */}
-        <button
-          onClick={() => setShowPanel(!showPanel)}
-          className="lg:hidden fixed top-4 left-4 z-20 w-12 h-12 bg-gray-800/80 backdrop-blur-sm rounded-xl border border-gray-700 flex items-center justify-center text-white"
-        >
-          {showPanel ? <X className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
-        </button>
+    <div className="min-h-screen bg-gray-900 flex flex-col">
+      
+      {/* ========== 3D Сцена (всегда наверху) ========== */}
+      <div className="flex-1 flex flex-col">
+        <div className="flex-1 p-2 sm:p-4">
+          <LithophanyLamp
+            uploadedImage1={uploadedImage1}
+            uploadedImage2={uploadedImage2}
+            lightOn={lightOn}
+            brightness={brightness}
+            contrast={contrast}
+            warmth={warmth}
+            autoRotate={autoRotate}
+            onResetCamera={resetCameraRef}
+          />
+        </div>
 
-        <div className="grid lg:grid-cols-[320px_1fr] gap-8">
+        {/* Быстрые кнопки под 3D сценой */}
+        <div className="px-4 pb-2 flex gap-2 justify-center flex-wrap">
+          <button
+            onClick={() => setLightOn(!lightOn)}
+            className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
+              lightOn 
+                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' 
+                : 'bg-gray-800 text-gray-400 border border-gray-700'
+            }`}
+          >
+            {lightOn ? <Sun className="w-3.5 h-3.5 inline mr-1" /> : <Moon className="w-3.5 h-3.5 inline mr-1" />}
+            {lightOn ? 'Выкл' : 'Вкл'}
+          </button>
           
-          {/* Боковая панель */}
-          <div className={`${showPanel ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative z-10 lg:z-auto transition-transform duration-300 w-[320px] h-full lg:h-auto`}>
-            <div className="bg-gray-900/90 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 space-y-6 h-full lg:h-auto overflow-y-auto">
-              
-              {/* Бренд */}
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-300 to-amber-600 shadow-lg shadow-amber-500/30" />
-                <h2 className="text-lg font-bold text-white">Литофановая лампа</h2>
-              </div>
-              <p className="text-sm text-gray-400">
-                Загрузите 2 фото — для передней и задней стороны лампы
-              </p>
-
-              {/* Загрузка фото */}
-              <div className="space-y-3">
-                <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold">📸 Фотографии</p>
-                
-                <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors text-center">
-                  <Upload className="w-6 h-6 mx-auto text-gray-500 mb-2" />
-                  <p className="text-sm text-gray-300">Фото 1 — передняя сторона</p>
-                  <p className="text-xs text-gray-500 mt-1">выберите или перетащите</p>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => handleImageUpload(e, 1)}
-                  />
-                </label>
-
-                <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors text-center">
-                  <Upload className="w-6 h-6 mx-auto text-gray-500 mb-2" />
-                  <p className="text-sm text-gray-300">Фото 2 — задняя сторона</p>
-                  <p className="text-xs text-gray-500 mt-1">выберите или перетащите</p>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => handleImageUpload(e, 2)}
-                  />
-                </label>
-              </div>
-
-              {/* Свет */}
-              <div className="space-y-3">
-                <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold">💡 Свет</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setLightOn(true)}
-                    className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                      lightOn 
-                        ? 'bg-amber-500/20 border-amber-500 text-amber-400 border' 
-                        : 'bg-gray-800 border border-gray-700 text-gray-400'
-                    }`}
-                  >
-                    <Sun className="w-4 h-4 inline mr-1" /> Вкл
-                  </button>
-                  <button
-                    onClick={() => setLightOn(false)}
-                    className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                      !lightOn 
-                        ? 'bg-gray-700 border-gray-600 text-white border' 
-                        : 'bg-gray-800 border border-gray-700 text-gray-400'
-                    }`}
-                  >
-                    <Moon className="w-4 h-4 inline mr-1" /> Выкл
-                  </button>
-                </div>
-              </div>
-
-              {/* Настройки */}
-              <div className="space-y-4">
-                <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold">🎚️ Настройки</p>
-                
-                <div>
-                  <label className="flex justify-between text-sm text-gray-300 mb-1">
-                    Яркость <span className="text-amber-400">{brightness.toFixed(2)}</span>
-                  </label>
-                  <input
-                    type="range"
-                    min="0.5"
-                    max="3"
-                    step="0.01"
-                    value={brightness}
-                    onChange={(e) => setBrightness(parseFloat(e.target.value))}
-                    className="w-full accent-amber-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="flex justify-between text-sm text-gray-300 mb-1">
-                    Контраст <span className="text-amber-400">{contrast.toFixed(2)}</span>
-                  </label>
-                  <input
-                    type="range"
-                    min="0.3"
-                    max="1.5"
-                    step="0.01"
-                    value={contrast}
-                    onChange={(e) => setContrast(parseFloat(e.target.value))}
-                    className="w-full accent-amber-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="flex justify-between text-sm text-gray-300 mb-1">
-                    Теплота <span className="text-amber-400">{warmth.toFixed(2)}</span>
-                  </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value={warmth}
-                    onChange={(e) => setWarmth(parseFloat(e.target.value))}
-                    className="w-full accent-amber-500"
-                  />
-                </div>
-              </div>
-
-              {/* Форма заказа */}
-              <div className="space-y-3 pt-4 border-t border-gray-800">
-                <p className="text-xs uppercase tracking-wider text-gray-500 font-semibold">📋 Заказ</p>
-                
-                <input
-                  placeholder="Ваше имя"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-amber-500 outline-none"
-                />
-                
-                <input
-                  placeholder="Телефон (0700 123 456)"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-amber-500 outline-none"
-                />
-
-                {message.text && (
-                  <p className={`text-sm p-3 rounded-lg ${
-                    message.type === 'success' 
-                      ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
-                      : 'bg-red-500/10 text-red-400 border border-red-500/20'
-                  }`}>
-                    {message.text}
-                  </p>
-                )}
-
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleSubmitOrder}
-                  disabled={loading}
-                  className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-60 disabled:cursor-not-allowed transition-all"
-                >
-                  <Zap className="w-5 h-5" />
-                  {loading ? "⏳ Отправка..." : "📩 Заказать через WhatsApp"}
-                </motion.button>
-              </div>
-            </div>
-          </div>
-
-          {/* 3D Сцена */}
-          <div className="space-y-4">
-            <LithophanyLamp
-              uploadedImage1={uploadedImage1}
-              uploadedImage2={uploadedImage2}
-              lightOn={lightOn}
-              brightness={brightness}
-              contrast={contrast}
-              warmth={warmth}
-            />
-            
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => setAutoRotate(!autoRotate)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  autoRotate 
-                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' 
-                    : 'bg-gray-800 text-gray-400 border border-gray-700'
-                }`}
-              >
-                <RotateCw className="w-4 h-4 inline mr-2" />
-                Автоповорот {autoRotate ? 'ON' : 'OFF'}
-              </button>
-            </div>
-
-            <p className="text-center text-gray-500 text-sm">
-              🖱️ Перетащите, чтобы вращать · колёсико для масштаба
-            </p>
-          </div>
+          <button
+            onClick={() => setAutoRotate(!autoRotate)}
+            className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
+              autoRotate 
+                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
+                : 'bg-gray-800 text-gray-400 border border-gray-700'
+            }`}
+          >
+            <RotateCw className="w-3.5 h-3.5 inline mr-1" />
+            {autoRotate ? 'Стоп' : 'Вращать'}
+          </button>
+          
+          <button
+            onClick={() => resetCameraRef.current?.()}
+            className="px-4 py-2 rounded-full text-xs font-medium bg-gray-800 text-gray-300 border border-gray-700"
+          >
+            🎯 Сброс
+          </button>
+          
+          <button
+            onClick={() => setShowPanel(true)}
+            className="px-4 py-2 rounded-full text-xs font-medium bg-amber-600 text-white shadow-lg shadow-amber-500/20"
+          >
+            <Settings className="w-3.5 h-3.5 inline mr-1" />
+            Настройки
+          </button>
         </div>
       </div>
+
+      {/* ========== Мобильная панель (снизу) ========== */}
+      <AnimatePresence>
+        {showPanel && (
+          <motion.div
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-xl border-t border-gray-800 rounded-t-3xl max-h-[85vh] overflow-y-auto"
+          >
+            {/* Ручка для свайпа */}
+            <div className="sticky top-0 bg-gray-900/95 backdrop-blur-xl pt-3 pb-2 px-4 z-10">
+              <div className="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-3" />
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold text-white">Настройки лампы</h3>
+                <button
+                  onClick={() => setShowPanel(false)}
+                  className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center"
+                >
+                  <X className="w-4 h-4 text-gray-400" />
+                </button>
+              </div>
+            </div>
+
+            {/* Табы */}
+            <div className="px-4 pb-2">
+              <div className="flex gap-2 bg-gray-800 rounded-xl p-1">
+                {[
+                  { id: 'upload', icon: Camera, label: 'Фото' },
+                  { id: 'settings', icon: Settings, label: 'Свет' },
+                  { id: 'order', icon: ShoppingCart, label: 'Заказ' },
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-1 py-2.5 rounded-lg text-xs font-medium transition-all flex items-center justify-center gap-1.5 ${
+                      activeTab === tab.id
+                        ? 'bg-amber-500 text-gray-900'
+                        : 'text-gray-400'
+                    }`}
+                  >
+                    <tab.icon className="w-4 h-4" />
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Содержимое табов */}
+            <div className="px-4 pb-8 space-y-4">
+              
+              {/* Таб: Загрузка фото */}
+              {activeTab === 'upload' && (
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-400">
+                    Загрузите 1 или 2 фото для разных сторон лампы
+                  </p>
+                  
+                  <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
+                        <ImageIcon className="w-5 h-5 text-gray-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-white truncate">
+                          {uploadedImage1 ? '✅ Фото 1 загружено' : '📸 Передняя сторона'}
+                        </p>
+                        <p className="text-xs text-gray-500">Нажмите, чтобы выбрать</p>
+                      </div>
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleImageUpload(e, 1)}
+                    />
+                  </label>
+
+                  <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
+                        <ImageIcon className="w-5 h-5 text-gray-500" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-white truncate">
+                          {uploadedImage2 ? '✅ Фото 2 загружено' : '📸 Задняя сторона'}
+                        </p>
+                        <p className="text-xs text-gray-500">Нажмите, чтобы выбрать</p>
+                      </div>
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleImageUpload(e, 2)}
+                    />
+                  </label>
+                </div>
+              )}
+
+              {/* Таб: Настройки света */}
+              {activeTab === 'settings' && (
+                <div className="space-y-4">
+                  {/* Яркость */}
+                  <div>
+                    <label className="flex justify-between text-sm text-gray-300 mb-2">
+                      ☀️ Яркость
+                      <span className="text-amber-400 font-mono">{brightness.toFixed(2)}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="0.5"
+                      max="3"
+                      step="0.01"
+                      value={brightness}
+                      onChange={(e) => setBrightness(parseFloat(e.target.value))}
+                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500"
+                    />
+                  </div>
+
+                  {/* Контраст */}
+                  <div>
+                    <label className="flex justify-between text-sm text-gray-300 mb-2">
+                      🎨 Контраст
+                      <span className="text-amber-400 font-mono">{contrast.toFixed(2)}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="0.3"
+                      max="1.5"
+                      step="0.01"
+                      value={contrast}
+                      onChange={(e) => setContrast(parseFloat(e.target.value))}
+                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500"
+                    />
+                  </div>
+
+                  {/* Теплота */}
+                  <div>
+                    <label className="flex justify-between text-sm text-gray-300 mb-2">
+                      🔥 Теплота
+                      <span className="text-amber-400 font-mono">{warmth.toFixed(2)}</span>
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.01"
+                      value={warmth}
+                      onChange={(e) => setWarmth(parseFloat(e.target.value))}
+                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Таб: Заказ */}
+              {activeTab === 'order' && (
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-400">
+                    Заполните данные для оформления заказа
+                  </p>
+                  
+                  <input
+                    placeholder="Ваше имя"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm"
+                  />
+                  
+                  <input
+                    placeholder="Телефон: 0700 123 456"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    type="tel"
+                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm"
+                  />
+
+                  {message.text && (
+                    <p className={`text-sm p-3 rounded-xl ${
+                      message.type === 'success' 
+                        ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                        : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                    }`}>
+                      {message.text}
+                    </p>
+                  )}
+
+                  <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleSubmitOrder}
+                    disabled={loading}
+                    className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-60 disabled:cursor-not-allowed text-sm"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    {loading ? "⏳ Отправка..." : "📩 Заказать через WhatsApp"}
+                  </motion.button>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Оверлей при открытой панели */}
+      <AnimatePresence>
+        {showPanel && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowPanel(false)}
+            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
