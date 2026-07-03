@@ -108,7 +108,7 @@ export default function AdminPage() {
     const url = editingId
       ? `${API}/products/${editingId}/`   // өзгөртүү
       : `${API}/products`;                 // жаңы кошуу
-    const method = editingId ? "PATCH" : "POST";
+    const method = editingId ? "PUT" : "POST";   // ✅ "PATCH" ордуна "PUT"
 
     const res = await fetch(url, {
       method,
