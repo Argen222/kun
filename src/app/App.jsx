@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router"; // ← useLocation кошулду
+import ReactGA from "react-ga4";                                       // ← ReactGA кошулду
 import { Navigation } from "./components/Navigation";
 import { HomePage } from "./components/HomePage";
 import CatalogPage from "./components/CatalogPage";
@@ -29,6 +30,17 @@ const productData = {
   "old-8": { name: "Жарык берүүчү эстелик кубу", price: 279, image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800", category: "Литофания" },
 };
 
+// ✅ Жаңы компонент – барак өзгөргөндө Google'га кабарлайт
+function GoogleAnalyticsTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: location.pathname });
+  }, [location]);
+
+  return null; // Эч нерсе көрсөтпөйт
+}
+
 function App() {
   const [theme, setTheme] = useState("light");
   const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem("cart")) || []);
@@ -47,7 +59,6 @@ function App() {
       document.documentElement.classList.toggle("dark", savedTheme === "dark");
     }
 
-    // ✅ Дарек жана сүрөт шилтемелери туураланды
     fetch(`${API}/products`)
       .then((res) => res.json())
       .then((data) => {
@@ -101,6 +112,7 @@ function App() {
     <BrowserRouter>
       <div className="min-h-screen bg-background text-foreground">
         <ScrollToTop />
+        <GoogleAnalyticsTracker />   {/* ← Ушул жерге кошулду */}
         <Navigation
           cartCount={cart.reduce((sum, item) => sum + item.quantity, 0)}
           favoritesCount={favorites.length}
