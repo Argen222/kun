@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Trash2, Plus, Package, Tag } from "lucide-react";
+import { Trash2, Plus, Package, Tag, Pencil } from "lucide-react"; // ← Pencil иконкасы кошулду
 
 const API = "https://kun-backend1.onrender.com/api";
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState("products"); // "products" | "categories"
+  const [activeTab, setActiveTab] = useState("products");
 
   // Products state
   const [products, setProducts] = useState([]);
@@ -17,6 +17,9 @@ export default function AdminPage() {
   const [categoryId, setCategoryId] = useState("");
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
+
+  // ← Жаңы: редакциялоо үчүн абал
+  const [editingId, setEditingId] = useState(null); // кайсы товар өзгөртүлүп жатат (ID)
 
   // Categories state
   const [categories, setCategories] = useState([]);
@@ -44,6 +47,38 @@ export default function AdminPage() {
       .then(data => setCategories(Array.isArray(data) ? data : []));
   };
 
+  // ── Жаңы: форманы товар маалыматтары менен толтуруу (редакциялоону баштоо) ──
+  const startEdit = (product) => {
+    setEditingId(product.id);
+    setName(product.name || "");
+    setDescription(product.description || "");
+    setPrice(product.price != null ? String(product.price) : "");
+    setStock(product.stock != null ? String(product.stock) : "");
+    setCategoryId(product.category?.id || "");
+    setImage(null);                // жаңы сүрөт тандала элек
+    setPreview(product.image_url || null); // эски сүрөт көрүнсүн
+    setProductMsg("");
+    // Категория тандалганда селектте туура көрсөтүлүшү үчүн
+    if (product.category?.id) {
+      setCategoryId(String(product.category.id));
+    } else {
+      setCategoryId("");
+    }
+  };
+
+  // ── Жаңы: редакциялоону жокко чыгаруу (форманы тазалоо) ──
+  const cancelEdit = () => {
+    setEditingId(null);
+    setName("");
+    setDescription("");
+    setPrice("");
+    setStock("");
+    setCategoryId("");
+    setImage(null);
+    setPreview(null);
+    setProductMsg("");
+  };
+
   // ── PRODUCTS ──────────────────────────────────────────────
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -53,13 +88,15 @@ export default function AdminPage() {
     }
   };
 
-  const handleAddProduct = async (e) => {
+  // Жаңы: товарды кошуу же өзгөртүү (форма жөнөтүү)
+  const handleSubmitProduct = async (e) => {
     e.preventDefault();
     if (!name || !price) {
       setProductMsg("❌ Аты жана баасы милдеттүү!");
       return;
     }
     setLoadingProduct(true);
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("description", description);
@@ -68,16 +105,20 @@ export default function AdminPage() {
     if (categoryId) formData.append("category_id", categoryId);
     if (image) formData.append("image", image);
 
-    const res = await fetch(`${API}/products`, {
-      method: "POST",
+    const url = editingId
+      ? `${API}/products/${editingId}/`   // өзгөртүү
+      : `${API}/products`;                 // жаңы кошуу
+    const method = editingId ? "PATCH" : "POST";
+
+    const res = await fetch(url, {
+      method,
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
 
     if (res.ok) {
-      setProductMsg("✅ Товар кошулду!");
-      setName(""); setDescription(""); setPrice("");
-      setStock(""); setCategoryId(""); setImage(null); setPreview(null);
+      setProductMsg(editingId ? "✅ Товар жаңыртылды!" : "✅ Товар кошулду!");
+      cancelEdit(); // форманы тазалоо жана редакциялоодон чыгуу
       fetchProducts();
     } else {
       const err = await res.json().catch(() => ({}));
@@ -93,6 +134,8 @@ export default function AdminPage() {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
+    // Эгер өчүрүлгөн товар учурда редакцияланып жатса, форманы тазалоо
+    if (editingId === id) cancelEdit();
     fetchProducts();
   };
 
@@ -169,11 +212,11 @@ export default function AdminPage() {
       {/* ── ТОВАРЛАР ТАБЫ ── */}
       {activeTab === "products" && (
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Товар кошуу формасы */}
+          {/* Товар кошуу / өзгөртүү формасы */}
           <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
               <Plus className="w-5 h-5 text-amber-600" />
-              Жаңы товар кошуу
+              {editingId ? "Товарды өзгөртүү" : "Жаңы товар кошуу"} {/* ← Динамикалык аталыш */}
             </h2>
 
             {productMsg && (
@@ -184,7 +227,7 @@ export default function AdminPage() {
               </div>
             )}
 
-            <form onSubmit={handleAddProduct} className="space-y-4">
+            <form onSubmit={handleSubmitProduct} className="space-y-4"> {/* ← handleSubmitProduct */}
               <input
                 className="w-full p-3 border border-border rounded-xl bg-background"
                 placeholder="Товардын аты *"
@@ -226,6 +269,7 @@ export default function AdminPage() {
                 ))}
               </select>
 
+              {/* Сүрөт талаасы */}
               {preview ? (
                 <div className="relative">
                   <img src={preview} className="w-full h-48 object-cover rounded-xl" alt="preview" />
@@ -245,13 +289,28 @@ export default function AdminPage() {
                 </label>
               )}
 
-              <button
-                type="submit"
-                disabled={loadingProduct}
-                className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold transition disabled:opacity-50"
-              >
-                {loadingProduct ? "Жүктөлүүдө..." : "➕ Товар кошуу"}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  disabled={loadingProduct}
+                  className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold transition disabled:opacity-50"
+                >
+                  {loadingProduct
+                    ? "Жүктөлүүдө..."
+                    : editingId
+                    ? "💾 Сактоо"
+                    : "➕ Товар кошуу"}
+                </button>
+                {editingId && ( /* ← Жокко чыгаруу баскычы редакциялоодо гана көрүнөт */
+                  <button
+                    type="button"
+                    onClick={cancelEdit}
+                    className="px-6 py-3 bg-gray-200 dark:bg-gray-700 rounded-xl font-bold transition"
+                  >
+                    Жокко чыгаруу
+                  </button>
+                )}
+              </div>
             </form>
           </div>
 
@@ -280,6 +339,14 @@ export default function AdminPage() {
                       Склад: {p.stock} | {p.category?.name || "Категориясыз"}
                     </p>
                   </div>
+                  {/* ← Өзгөртүү баскычы кошулду */}
+                  <button
+                    onClick={() => startEdit(p)}
+                    className="p-2 text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition"
+                    title="Өзгөртүү"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
                   <button
                     onClick={() => handleDeleteProduct(p.id)}
                     className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
@@ -293,16 +360,15 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* ── КАТЕГОРИЯЛАР ТАБЫ ── */}
+      {/* ── КАТЕГОРИЯЛАР ТАБЫ (өзгөрүүсүз) ── */}
       {activeTab === "categories" && (
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Категория кошуу */}
+          {/* ... категория формасы (мурдагыдай) ... */}
           <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
               <Plus className="w-5 h-5 text-amber-600" />
               Жаңы категория кошуу
             </h2>
-
             {catMsg && (
               <div className={`p-3 rounded-lg mb-4 text-sm ${
                 catMsg.includes("✅") ? "bg-green-500/10 text-green-600" : "bg-red-500/10 text-red-600"
@@ -310,7 +376,6 @@ export default function AdminPage() {
                 {catMsg}
               </div>
             )}
-
             <form onSubmit={handleAddCategory} className="space-y-4">
               <input
                 className="w-full p-3 border border-border rounded-xl bg-background"
@@ -318,7 +383,6 @@ export default function AdminPage() {
                 value={catName}
                 onChange={e => {
                   setCatName(e.target.value);
-                  // Автоматтык slug түзүү
                   setCatSlug(e.target.value.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""));
                 }}
               />
@@ -341,13 +405,11 @@ export default function AdminPage() {
             </form>
           </div>
 
-          {/* Категориялар тизмеси */}
           <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
               <Tag className="w-5 h-5 text-amber-600" />
               Категориялар ({categories.length})
             </h2>
-
             <div className="space-y-3">
               {categories.length === 0 && (
                 <p className="text-center text-muted-foreground py-8">Категория жок</p>
