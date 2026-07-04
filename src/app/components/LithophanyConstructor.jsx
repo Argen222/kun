@@ -528,7 +528,7 @@ function LithophanyConstructor() {
                  `🎚️ *Яркость:* ${brightness.toFixed(1)}\n` +
                  `🔄 *Автоповорот:* ${autoRotate ? 'Да' : 'Нет'}`;
 
-    const whatsappUrl = `https://wa.me/996708515052?text=${encodeURIComponent(text)}`;
+    const whatsappUrl = `https://wa.me/996770150025?text=${encodeURIComponent(text)}`;
 
     // 4. API'ге жөнөтүү (иштебесе да WhatsApp ачылат)
     try {
