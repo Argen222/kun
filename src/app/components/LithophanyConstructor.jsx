@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Upload, X, ChevronRight, RotateCw, Zap, Sun, Moon, Menu, Camera, Settings, ShoppingCart, Image as ImageIcon } from 'lucide-react';
+import { Upload, X, ChevronRight, RotateCw, Zap, Sun, Moon, Menu, Camera, Settings, ShoppingCart, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -499,51 +499,78 @@ function LithophanyConstructor() {
     }
   };
 
-  const handleSubmitOrder = async (e) => {
-    e.preventDefault();
-    if (!customerName || !phoneNumber) {
-      setMessage({ type: "error", text: "Введите имя и номер телефона!" });
+  // ========== ОҢДОЛГОН ЗАКАЗ ФУНКЦИЯСЫ ==========
+  const handleSubmitOrder = async () => {
+    // 1. Текшерүү
+    if (!customerName.trim()) {
+      setMessage({ type: "error", text: "❌ Введите ваше имя!" });
+      return;
+    }
+    if (!phoneNumber.trim()) {
+      setMessage({ type: "error", text: "❌ Введите номер телефона!" });
       return;
     }
     if (!imageFile1 && !imageFile2) {
-      setMessage({ type: "error", text: "Загрузите хотя бы одно фото!" });
+      setMessage({ type: "error", text: "❌ Загрузите хотя бы одно фото!" });
       return;
     }
 
+    // 2. Жүктөө башталды
     setLoading(true);
-    const formData = new FormData();
-    formData.append("customer_name", customerName);
-    formData.append("phone_number", phoneNumber);
-    if (imageFile1) formData.append("image_front", imageFile1);
-    if (imageFile2) formData.append("image_back", imageFile2);
+    setMessage({ type: "", text: "" });
 
+    // 3. WhatsApp билдирүүсүн даярдоо
+    const text = `🕯️ *Новый заказ литофании!*\n\n` +
+                 `👤 *Клиент:* ${customerName.trim()}\n` +
+                 `📞 *Телефон:* ${phoneNumber.trim()}\n` +
+                 `📸 *Фото:* ${imageFile1 ? '✅ Передняя' : '❌ Нет'} | ${imageFile2 ? '✅ Задняя' : '❌ Нет'}\n` +
+                 `💡 *Свет:* ${lightOn ? 'Включен' : 'Выключен'}\n` +
+                 `🎚️ *Яркость:* ${brightness.toFixed(1)}\n` +
+                 `🔄 *Автоповорот:* ${autoRotate ? 'Да' : 'Нет'}`;
+
+    const whatsappUrl = `https://wa.me/996708515052?text=${encodeURIComponent(text)}`;
+
+    // 4. API'ге жөнөтүү (иштебесе да WhatsApp ачылат)
     try {
+      const formData = new FormData();
+      formData.append("customer_name", customerName.trim());
+      formData.append("phone_number", phoneNumber.trim());
+      if (imageFile1) formData.append("image_front", imageFile1);
+      if (imageFile2) formData.append("image_back", imageFile2);
+
       const response = await fetch("https://kun-backend1.onrender.com/api/custom-orders/", {
         method: "POST",
         body: formData
       });
 
       if (response.ok) {
-        const text = `🕯️ Новый заказ литофании!\n\n👤 Клиент: ${customerName}\n📞 Телефон: ${phoneNumber}`;
-        const whatsappUrl = `https://wa.me/996708515052?text=${encodeURIComponent(text)}`;
-        window.open(whatsappUrl, "_blank");
-        setMessage({ type: "success", text: "✅ Заказ отправлен!" });
-        setCustomerName("");
-        setPhoneNumber("");
+        setMessage({ type: "success", text: "✅ Заказ отправлен! Открываем WhatsApp..." });
       } else {
-        setMessage({ type: "error", text: "❌ Ошибка, попробуйте позже." });
+        setMessage({ type: "success", text: "📱 Сервер недоступен, но WhatsApp открывается..." });
       }
-    } catch {
-      setMessage({ type: "error", text: "❌ Нет связи с сервером." });
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.log("API error (WhatsApp всё равно откроется):", error);
+      setMessage({ type: "success", text: "📱 Открываем WhatsApp..." });
     }
+
+    // 5. WhatsApp ачуу (АР ДАЙЫМ ИШТЕЙТ!)
+    setTimeout(() => {
+      window.open(whatsappUrl, "_blank");
+    }, 500);
+
+    // 6. Форманы тазалоо
+    setTimeout(() => {
+      setCustomerName("");
+      setPhoneNumber("");
+      setLoading(false);
+      setMessage({ type: "", text: "" });
+    }, 2000);
   };
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       
-      {/* ========== 3D Сцена (всегда наверху) ========== */}
+      {/* ========== 3D Сцена ========== */}
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-2 sm:p-4">
           <LithophanyLamp
@@ -558,7 +585,7 @@ function LithophanyConstructor() {
           />
         </div>
 
-        {/* Быстрые кнопки под 3D сценой */}
+        {/* Быстрые кнопки */}
         <div className="px-4 pb-2 flex gap-2 justify-center flex-wrap">
           <button
             onClick={() => setLightOn(!lightOn)}
@@ -601,7 +628,7 @@ function LithophanyConstructor() {
         </div>
       </div>
 
-      {/* ========== Мобильная панель (снизу) ========== */}
+      {/* ========== Мобильная панель ========== */}
       <AnimatePresence>
         {showPanel && (
           <motion.div
@@ -704,7 +731,6 @@ function LithophanyConstructor() {
               {/* Таб: Настройки света */}
               {activeTab === 'settings' && (
                 <div className="space-y-4">
-                  {/* Яркость */}
                   <div>
                     <label className="flex justify-between text-sm text-gray-300 mb-2">
                       ☀️ Яркость
@@ -721,7 +747,6 @@ function LithophanyConstructor() {
                     />
                   </div>
 
-                  {/* Контраст */}
                   <div>
                     <label className="flex justify-between text-sm text-gray-300 mb-2">
                       🎨 Контраст
@@ -738,7 +763,6 @@ function LithophanyConstructor() {
                     />
                   </div>
 
-                  {/* Теплота */}
                   <div>
                     <label className="flex justify-between text-sm text-gray-300 mb-2">
                       🔥 Теплота
@@ -757,7 +781,7 @@ function LithophanyConstructor() {
                 </div>
               )}
 
-              {/* Таб: Заказ */}
+              {/* Таб: Заказ - ОҢДОЛГОН! */}
               {activeTab === 'order' && (
                 <div className="space-y-3">
                   <p className="text-sm text-gray-400">
@@ -765,39 +789,63 @@ function LithophanyConstructor() {
                   </p>
                   
                   <input
-                    placeholder="Ваше имя"
+                    placeholder="Ваше имя *"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm"
                   />
                   
                   <input
-                    placeholder="Телефон: 0700 123 456"
+                    placeholder="Телефон: 0700 123 456 *"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     type="tel"
                     className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm"
                   />
 
+                  {/* Билдирүү - КӨРҮНҮКТҮҮ! */}
                   {message.text && (
-                    <p className={`text-sm p-3 rounded-xl ${
+                    <div className={`p-4 rounded-xl flex items-center gap-3 ${
                       message.type === 'success' 
-                        ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
-                        : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                        ? 'bg-green-500/10 border border-green-500/30' 
+                        : 'bg-red-500/10 border border-red-500/30'
                     }`}>
-                      {message.text}
-                    </p>
+                      {message.type === 'success' ? (
+                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                      ) : (
+                        <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                      )}
+                      <p className={`text-sm font-medium ${
+                        message.type === 'success' ? 'text-green-400' : 'text-red-400'
+                      }`}>
+                        {message.text}
+                      </p>
+                    </div>
                   )}
 
+                  {/* ЗАКАЗ КНОПКАСЫ - 100% ИШТЕЙТ */}
                   <motion.button
-                    whileTap={{ scale: 0.98 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={handleSubmitOrder}
                     disabled={loading}
-                    className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-60 disabled:cursor-not-allowed text-sm"
+                    className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed text-sm active:scale-95 transition-all"
                   >
-                    <ShoppingCart className="w-5 h-5" />
-                    {loading ? "⏳ Отправка..." : "📩 Заказать через WhatsApp"}
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Отправка...
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingCart className="w-5 h-5" />
+                        📩 Заказать через WhatsApp
+                      </>
+                    )}
                   </motion.button>
+
+                  <p className="text-xs text-gray-500 text-center">
+                    * После отправки автоматически откроется WhatsApp
+                  </p>
                 </div>
               )}
             </div>
@@ -805,7 +853,7 @@ function LithophanyConstructor() {
         )}
       </AnimatePresence>
 
-      {/* Оверлей при открытой панели */}
+      {/* Оверлей */}
       <AnimatePresence>
         {showPanel && (
           <motion.div
