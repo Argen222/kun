@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Upload, X, ChevronRight, RotateCw, Zap, Sun, Moon, Menu, Camera, Settings, ShoppingCart, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Upload, X, ChevronRight, RotateCw, Zap, Sun, Moon, Menu, Camera, Settings, ShoppingCart, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, Send } from 'lucide-react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ========== WhatsApp номери ==========
+const WHATSAPP_NUMBER = "996770150025";
 
 // ========== 3D Литофания Лампа Компоненти ==========
 function LithophanyLamp({ 
@@ -27,7 +30,6 @@ function LithophanyLamp({
   const H = 5.0;
   const DEFAULT_CAM = new THREE.Vector3(0, 1.2, 9.5);
 
-  // Сценаны бир жолу түзүү
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -228,68 +230,42 @@ function LithophanyLamp({
     const glowCyl = new THREE.Mesh(glowGeo, glowMat);
     group.add(glowCyl);
 
-    const baseMat = new THREE.MeshStandardMaterial({ 
-      color: 0x1b1d22, 
-      roughness: 0.5, 
-      metalness: 0.3 
-    });
-    const grilleMat = new THREE.MeshStandardMaterial({ 
-      color: 0x111316, 
-      roughness: 0.7 
-    });
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x1b1d22, roughness: 0.5, metalness: 0.3 });
+    const grilleMat = new THREE.MeshStandardMaterial({ color: 0x111316, roughness: 0.7 });
 
     const CAP_H = 0.18;
     const CAP_R = R + 0.07 + 0.03;
     const CAP_OVERLAP = 0.06;
 
-    const base = new THREE.Mesh(
-      new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64),
-      baseMat
-    );
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64), baseMat);
     base.position.y = -H / 2 + CAP_OVERLAP - CAP_H / 2;
     group.add(base);
 
-    const baseBottom = new THREE.Mesh(
-      new THREE.CircleGeometry(CAP_R * 0.9, 48),
-      grilleMat
-    );
+    const baseBottom = new THREE.Mesh(new THREE.CircleGeometry(CAP_R * 0.9, 48), grilleMat);
     baseBottom.rotation.x = Math.PI / 2;
     baseBottom.position.y = -H / 2 + CAP_OVERLAP - CAP_H;
     group.add(baseBottom);
 
-    const cap = new THREE.Mesh(
-      new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64),
-      baseMat
-    );
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64), baseMat);
     cap.position.y = H / 2 - CAP_OVERLAP + CAP_H / 2;
     group.add(cap);
 
-    const capTop = new THREE.Mesh(
-      new THREE.CircleGeometry(CAP_R * 0.9, 48),
-      grilleMat
-    );
+    const capTop = new THREE.Mesh(new THREE.CircleGeometry(CAP_R * 0.9, 48), grilleMat);
     capTop.rotation.x = -Math.PI / 2;
     capTop.position.y = H / 2 - CAP_OVERLAP + CAP_H;
     group.add(capTop);
 
     group.position.y = 0.55;
 
-    const floorMat = new THREE.MeshStandardMaterial({
-      color: 0x16181d,
-      roughness: 0.85,
-      metalness: 0.1
-    });
+    const floorMat = new THREE.MeshStandardMaterial({ color: 0x16181d, roughness: 0.85, metalness: 0.1 });
     const floor = new THREE.Mesh(new THREE.CircleGeometry(40, 64), floorMat);
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -H / 2 + group.position.y - 0.44;
     scene.add(floor);
 
     const poolMat = new THREE.MeshBasicMaterial({
-      color: 0xffcf8a,
-      transparent: true,
-      opacity: 0.0,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
+      color: 0xffcf8a, transparent: true, opacity: 0.0,
+      blending: THREE.AdditiveBlending, depthWrite: false
     });
     const pool = new THREE.Mesh(new THREE.CircleGeometry(5, 48), poolMat);
     pool.rotation.x = -Math.PI / 2;
@@ -306,28 +282,20 @@ function LithophanyLamp({
 
     const animate = () => {
       requestAnimationFrame(animate);
-      
       const on = litoMaterial.uniforms.lightOn.value;
       const b = litoMaterial.uniforms.brightness.value;
       
       innerLight.intensity += (on * b * 14 - innerLight.intensity) * 0.1;
-      innerLight.color.copy(
-        new THREE.Color().lerpColors(
-          new THREE.Color(0xf3f6ff),
-          new THREE.Color(0xffd9a0),
-          litoMaterial.uniforms.warmth.value
-        )
-      );
+      innerLight.color.copy(new THREE.Color().lerpColors(
+        new THREE.Color(0xf3f6ff), new THREE.Color(0xffd9a0), litoMaterial.uniforms.warmth.value
+      ));
       glowMat.opacity += (on * Math.min(b, 1) * 0.35 - glowMat.opacity) * 0.1;
       poolMat.opacity += (on * Math.min(b, 1.2) * 0.22 - poolMat.opacity) * 0.1;
       
       const targetBg = new THREE.Color().lerpColors(
-        new THREE.Color(0x161a20),
-        new THREE.Color(0x0a0b0e),
-        on * Math.min(b, 1)
+        new THREE.Color(0x161a20), new THREE.Color(0x0a0b0e), on * Math.min(b, 1)
       );
       scene.background.lerp(targetBg, 0.05);
-
       controls.update();
       renderer.render(scene, camera);
     };
@@ -354,20 +322,14 @@ function LithophanyLamp({
 
   function makePlaceholder() {
     const c = document.createElement('canvas');
-    c.width = 600;
-    c.height = 900;
+    c.width = 600; c.height = 900;
     const x = c.getContext('2d');
     const g = x.createLinearGradient(0, 0, 0, 900);
-    g.addColorStop(0, '#cfcfcf');
-    g.addColorStop(1, '#7a7a7a');
-    x.fillStyle = g;
-    x.fillRect(0, 0, 600, 900);
-    x.fillStyle = '#444';
-    x.font = 'bold 46px sans-serif';
-    x.textAlign = 'center';
+    g.addColorStop(0, '#cfcfcf'); g.addColorStop(1, '#7a7a7a');
+    x.fillStyle = g; x.fillRect(0, 0, 600, 900);
+    x.fillStyle = '#444'; x.font = 'bold 46px sans-serif'; x.textAlign = 'center';
     x.fillText('Загрузите фото', 300, 430);
-    x.font = '28px sans-serif';
-    x.fillStyle = '#555';
+    x.font = '28px sans-serif'; x.fillStyle = '#555';
     x.fillText('🖼️', 300, 500);
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace;
@@ -382,7 +344,6 @@ function LithophanyLamp({
       tex.wrapT = THREE.ClampToEdgeWrapping;
       tex.anisotropy = rendererRef.current?.capabilities.getMaxAnisotropy() || 1;
       const ar = tex.image.width / tex.image.height;
-      
       if (materialRef.current) {
         if (slot === 2) {
           materialRef.current.uniforms.map2.value = tex;
@@ -397,43 +358,13 @@ function LithophanyLamp({
     });
   }, []);
 
-  useEffect(() => {
-    if (uploadedImage1) loadImageTexture(uploadedImage1, 1);
-  }, [uploadedImage1, loadImageTexture]);
-
-  useEffect(() => {
-    if (uploadedImage2) loadImageTexture(uploadedImage2, 2);
-  }, [uploadedImage2, loadImageTexture]);
-
-  useEffect(() => {
-    if (materialRef.current) {
-      materialRef.current.uniforms.lightOn.value = lightOn ? 1.0 : 0.0;
-    }
-  }, [lightOn]);
-
-  useEffect(() => {
-    if (materialRef.current) {
-      materialRef.current.uniforms.brightness.value = brightness;
-    }
-  }, [brightness]);
-
-  useEffect(() => {
-    if (materialRef.current) {
-      materialRef.current.uniforms.contrast.value = contrast;
-    }
-  }, [contrast]);
-
-  useEffect(() => {
-    if (materialRef.current) {
-      materialRef.current.uniforms.warmth.value = warmth;
-    }
-  }, [warmth]);
-
-  useEffect(() => {
-    if (controlsRef.current) {
-      controlsRef.current.autoRotate = autoRotate;
-    }
-  }, [autoRotate]);
+  useEffect(() => { if (uploadedImage1) loadImageTexture(uploadedImage1, 1); }, [uploadedImage1, loadImageTexture]);
+  useEffect(() => { if (uploadedImage2) loadImageTexture(uploadedImage2, 2); }, [uploadedImage2, loadImageTexture]);
+  useEffect(() => { if (materialRef.current) materialRef.current.uniforms.lightOn.value = lightOn ? 1.0 : 0.0; }, [lightOn]);
+  useEffect(() => { if (materialRef.current) materialRef.current.uniforms.brightness.value = brightness; }, [brightness]);
+  useEffect(() => { if (materialRef.current) materialRef.current.uniforms.contrast.value = contrast; }, [contrast]);
+  useEffect(() => { if (materialRef.current) materialRef.current.uniforms.warmth.value = warmth; }, [warmth]);
+  useEffect(() => { if (controlsRef.current) controlsRef.current.autoRotate = autoRotate; }, [autoRotate]);
 
   const handleResetCamera = useCallback(() => {
     if (cameraRef.current && controlsRef.current) {
@@ -443,26 +374,15 @@ function LithophanyLamp({
     }
   }, []);
 
-  useEffect(() => {
-    if (onResetCamera) {
-      onResetCamera.current = handleResetCamera;
-    }
-  }, [handleResetCamera, onResetCamera]);
+  useEffect(() => { if (onResetCamera) onResetCamera.current = handleResetCamera; }, [handleResetCamera, onResetCamera]);
 
   return (
-    <div 
-      ref={containerRef} 
-      className="w-full rounded-2xl overflow-hidden shadow-2xl"
-      style={{ 
-        aspectRatio: '1/1',
-        maxHeight: 'calc(100vh - 200px)',
-        minHeight: '300px'
-      }} 
-    />
+    <div ref={containerRef} className="w-full rounded-2xl overflow-hidden shadow-2xl"
+      style={{ aspectRatio: '1/1', maxHeight: 'calc(100vh - 200px)', minHeight: '300px' }} />
   );
 }
 
-// ========== Негизги Конструктор ==========
+// ========== Негизги Конструктор (WhatsApp ОҢДОЛДУ) ==========
 function LithophanyConstructor() {
   const [uploadedImage1, setUploadedImage1] = useState(null);
   const [uploadedImage2, setUploadedImage2] = useState(null);
@@ -478,7 +398,7 @@ function LithophanyConstructor() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [showPanel, setShowPanel] = useState(false);
-  const [activeTab, setActiveTab] = useState('upload'); // upload, settings, order
+  const [activeTab, setActiveTab] = useState('upload');
   
   const resetCameraRef = useRef(null);
 
@@ -499,9 +419,9 @@ function LithophanyConstructor() {
     }
   };
 
-  // ========== ОҢДОЛГОН ЗАКАЗ ФУНКЦИЯСЫ ==========
-  const handleSubmitOrder = async () => {
-    // 1. Текшерүү
+  // ========== WhatsApp заказ – ТОЛУК ОҢДОЛДУ ==========
+  const handleSubmitOrder = () => {
+    // Текшерүү
     if (!customerName.trim()) {
       setMessage({ type: "error", text: "❌ Введите ваше имя!" });
       return;
@@ -510,67 +430,73 @@ function LithophanyConstructor() {
       setMessage({ type: "error", text: "❌ Введите номер телефона!" });
       return;
     }
-    if (!imageFile1 && !imageFile2) {
-      setMessage({ type: "error", text: "❌ Загрузите хотя бы одно фото!" });
-      return;
-    }
 
-    // 2. Жүктөө башталды
     setLoading(true);
     setMessage({ type: "", text: "" });
 
-    // 3. WhatsApp билдирүүсүн даярдоо
-    const text = `🕯️ *Новый заказ литофании!*\n\n` +
+    // WhatsApp тексти
+    const text = `🕯️ *НОВЫЙ ЗАКАЗ ЛИТОФАНИИ*\n\n` +
                  `👤 *Клиент:* ${customerName.trim()}\n` +
-                 `📞 *Телефон:* ${phoneNumber.trim()}\n` +
-                 `📸 *Фото:* ${imageFile1 ? '✅ Передняя' : '❌ Нет'} | ${imageFile2 ? '✅ Задняя' : '❌ Нет'}\n` +
-                 `💡 *Свет:* ${lightOn ? 'Включен' : 'Выключен'}\n` +
-                 `🎚️ *Яркость:* ${brightness.toFixed(1)}\n` +
-                 `🔄 *Автоповорот:* ${autoRotate ? 'Да' : 'Нет'}`;
+                 `📞 *Телефон:* ${phoneNumber.trim()}\n\n` +
+                 `📸 *Фото 1 (перед):* ${imageFile1 ? '✅ Загружено (' + (imageFile1.size / 1024).toFixed(1) + ' KB)' : '❌ Не загружено'}\n` +
+                 `📸 *Фото 2 (зад):* ${imageFile2 ? '✅ Загружено (' + (imageFile2.size / 1024).toFixed(1) + ' KB)' : '❌ Не загружено'}\n\n` +
+                 `💡 *Свет:* ${lightOn ? 'Включен ✓' : 'Выключен ✗'}\n` +
+                 `☀️ *Яркость:* ${brightness.toFixed(1)}\n` +
+                 `🎨 *Контраст:* ${contrast.toFixed(2)}\n` +
+                 `🔥 *Теплота:* ${warmth.toFixed(2)}\n` +
+                 `🔄 *Автоповорот:* ${autoRotate ? 'Да' : 'Нет'}\n\n` +
+                 `📅 *Дата заказа:* ${new Date().toLocaleString('ru-RU')}\n\n` +
+                 `⚠️ *ВАЖНО:* Отправьте фото ОТДЕЛЬНО в этот чат!`;
 
-    const whatsappUrl = `https://wa.me/996770150025?text=${encodeURIComponent(text)}`;
+    // WhatsApp URL
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 
-    // 4. API'ге жөнөтүү (иштебесе да WhatsApp ачылат)
+    // API'ге жөнөтүү (кошумча, иштебесе да WhatsApp ачылат)
     try {
       const formData = new FormData();
       formData.append("customer_name", customerName.trim());
       formData.append("phone_number", phoneNumber.trim());
+      formData.append("light_on", lightOn);
+      formData.append("brightness", brightness);
+      formData.append("contrast", contrast);
+      formData.append("warmth", warmth);
       if (imageFile1) formData.append("image_front", imageFile1);
       if (imageFile2) formData.append("image_back", imageFile2);
 
-      const response = await fetch("https://kun-backend1.onrender.com/api/custom-orders/", {
+      fetch("https://kun-backend1.onrender.com/api/custom-orders/", {
         method: "POST",
         body: formData
+      }).then(response => {
+        if (response.ok) {
+          console.log("✅ Заказ сохранён на сервере");
+        }
+      }).catch(() => {
+        console.log("⚠️ Сервер недоступен, но WhatsApp откроется");
       });
-
-      if (response.ok) {
-        setMessage({ type: "success", text: "✅ Заказ отправлен! Открываем WhatsApp..." });
-      } else {
-        setMessage({ type: "success", text: "📱 Сервер недоступен, но WhatsApp открывается..." });
-      }
     } catch (error) {
-      console.log("API error (WhatsApp всё равно откроется):", error);
-      setMessage({ type: "success", text: "📱 Открываем WhatsApp..." });
+      console.log("ℹ️ API error (не критично)");
     }
 
-    // 5. WhatsApp ачуу (АР ДАЙЫМ ИШТЕЙТ!)
+    // WhatsApp АЧУУ
+    setMessage({ type: "success", text: "✅ Открываем WhatsApp..." });
+    
     setTimeout(() => {
       window.open(whatsappUrl, "_blank");
     }, 500);
 
-    // 6. Форманы тазалоо
+    // Тазалоо
     setTimeout(() => {
       setCustomerName("");
       setPhoneNumber("");
       setLoading(false);
       setMessage({ type: "", text: "" });
-    }, 2000);
+    }, 2500);
   };
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       
-      {/* ========== 3D Сцена ========== */}
+      {/* 3D Сцена */}
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-2 sm:p-4">
           <LithophanyLamp
@@ -585,7 +511,7 @@ function LithophanyConstructor() {
           />
         </div>
 
-        {/* Быстрые кнопки */}
+        {/* Кнопки управления */}
         <div className="px-4 pb-2 flex gap-2 justify-center flex-wrap">
           <button
             onClick={() => setLightOn(!lightOn)}
@@ -628,7 +554,7 @@ function LithophanyConstructor() {
         </div>
       </div>
 
-      {/* ========== Мобильная панель ========== */}
+      {/* Мобильная панель */}
       <AnimatePresence>
         {showPanel && (
           <motion.div
@@ -638,21 +564,16 @@ function LithophanyConstructor() {
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-xl border-t border-gray-800 rounded-t-3xl max-h-[85vh] overflow-y-auto"
           >
-            {/* Ручка для свайпа */}
             <div className="sticky top-0 bg-gray-900/95 backdrop-blur-xl pt-3 pb-2 px-4 z-10">
               <div className="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-3" />
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-bold text-white">Настройки лампы</h3>
-                <button
-                  onClick={() => setShowPanel(false)}
-                  className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center"
-                >
+                <button onClick={() => setShowPanel(false)} className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center">
                   <X className="w-4 h-4 text-gray-400" />
                 </button>
               </div>
             </div>
 
-            {/* Табы */}
             <div className="px-4 pb-2">
               <div className="flex gap-2 bg-gray-800 rounded-xl p-1">
                 {[
@@ -660,13 +581,9 @@ function LithophanyConstructor() {
                   { id: 'settings', icon: Settings, label: 'Свет' },
                   { id: 'order', icon: ShoppingCart, label: 'Заказ' },
                 ].map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
+                  <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                     className={`flex-1 py-2.5 rounded-lg text-xs font-medium transition-all flex items-center justify-center gap-1.5 ${
-                      activeTab === tab.id
-                        ? 'bg-amber-500 text-gray-900'
-                        : 'text-gray-400'
+                      activeTab === tab.id ? 'bg-amber-500 text-gray-900' : 'text-gray-400'
                     }`}
                   >
                     <tab.icon className="w-4 h-4" />
@@ -676,15 +593,12 @@ function LithophanyConstructor() {
               </div>
             </div>
 
-            {/* Содержимое табов */}
             <div className="px-4 pb-8 space-y-4">
               
               {/* Таб: Загрузка фото */}
               {activeTab === 'upload' && (
                 <div className="space-y-3">
-                  <p className="text-sm text-gray-400">
-                    Загрузите 1 или 2 фото для разных сторон лампы
-                  </p>
+                  <p className="text-sm text-gray-400">Загрузите 1 или 2 фото для разных сторон лампы</p>
                   
                   <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors">
                     <div className="flex items-center gap-3">
@@ -692,18 +606,11 @@ function LithophanyConstructor() {
                         <ImageIcon className="w-5 h-5 text-gray-500" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-white truncate">
-                          {uploadedImage1 ? '✅ Фото 1 загружено' : '📸 Передняя сторона'}
-                        </p>
+                        <p className="text-sm text-white truncate">{uploadedImage1 ? '✅ Фото 1 загружено' : '📸 Передняя сторона'}</p>
                         <p className="text-xs text-gray-500">Нажмите, чтобы выбрать</p>
                       </div>
                     </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleImageUpload(e, 1)}
-                    />
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 1)} />
                   </label>
 
                   <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors">
@@ -712,18 +619,11 @@ function LithophanyConstructor() {
                         <ImageIcon className="w-5 h-5 text-gray-500" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-white truncate">
-                          {uploadedImage2 ? '✅ Фото 2 загружено' : '📸 Задняя сторона'}
-                        </p>
+                        <p className="text-sm text-white truncate">{uploadedImage2 ? '✅ Фото 2 загружено' : '📸 Задняя сторона'}</p>
                         <p className="text-xs text-gray-500">Нажмите, чтобы выбрать</p>
                       </div>
                     </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => handleImageUpload(e, 2)}
-                    />
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 2)} />
                   </label>
                 </div>
               )}
@@ -733,97 +633,62 @@ function LithophanyConstructor() {
                 <div className="space-y-4">
                   <div>
                     <label className="flex justify-between text-sm text-gray-300 mb-2">
-                      ☀️ Яркость
-                      <span className="text-amber-400 font-mono">{brightness.toFixed(2)}</span>
+                      ☀️ Яркость <span className="text-amber-400 font-mono">{brightness.toFixed(2)}</span>
                     </label>
-                    <input
-                      type="range"
-                      min="0.5"
-                      max="3"
-                      step="0.01"
-                      value={brightness}
+                    <input type="range" min="0.5" max="3" step="0.01" value={brightness}
                       onChange={(e) => setBrightness(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500"
-                    />
+                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500" />
                   </div>
 
                   <div>
                     <label className="flex justify-between text-sm text-gray-300 mb-2">
-                      🎨 Контраст
-                      <span className="text-amber-400 font-mono">{contrast.toFixed(2)}</span>
+                      🎨 Контраст <span className="text-amber-400 font-mono">{contrast.toFixed(2)}</span>
                     </label>
-                    <input
-                      type="range"
-                      min="0.3"
-                      max="1.5"
-                      step="0.01"
-                      value={contrast}
+                    <input type="range" min="0.3" max="1.5" step="0.01" value={contrast}
                       onChange={(e) => setContrast(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500"
-                    />
+                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500" />
                   </div>
 
                   <div>
                     <label className="flex justify-between text-sm text-gray-300 mb-2">
-                      🔥 Теплота
-                      <span className="text-amber-400 font-mono">{warmth.toFixed(2)}</span>
+                      🔥 Теплота <span className="text-amber-400 font-mono">{warmth.toFixed(2)}</span>
                     </label>
-                    <input
-                      type="range"
-                      min="0"
-                      max="1"
-                      step="0.01"
-                      value={warmth}
+                    <input type="range" min="0" max="1" step="0.01" value={warmth}
                       onChange={(e) => setWarmth(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500"
-                    />
+                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500" />
                   </div>
                 </div>
               )}
 
-              {/* Таб: Заказ - ОҢДОЛГОН! */}
+              {/* Таб: Заказ */}
               {activeTab === 'order' && (
                 <div className="space-y-3">
-                  <p className="text-sm text-gray-400">
-                    Заполните данные для оформления заказа
-                  </p>
+                  <p className="text-sm text-gray-400">Заполните данные для оформления заказа</p>
                   
-                  <input
-                    placeholder="Ваше имя *"
-                    value={customerName}
+                  <input placeholder="Ваше имя *" value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm"
-                  />
+                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm" />
                   
-                  <input
-                    placeholder="Телефон: 0700 123 456 *"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    type="tel"
-                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm"
-                  />
+                  <input placeholder="Телефон: 0700 123 456 *" value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)} type="tel"
+                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm" />
 
-                  {/* Билдирүү - КӨРҮНҮКТҮҮ! */}
                   {message.text && (
                     <div className={`p-4 rounded-xl flex items-center gap-3 ${
                       message.type === 'success' 
                         ? 'bg-green-500/10 border border-green-500/30' 
                         : 'bg-red-500/10 border border-red-500/30'
                     }`}>
-                      {message.type === 'success' ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
-                      ) : (
-                        <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                      )}
+                      {message.type === 'success' 
+                        ? <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                        : <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                      }
                       <p className={`text-sm font-medium ${
                         message.type === 'success' ? 'text-green-400' : 'text-red-400'
-                      }`}>
-                        {message.text}
-                      </p>
+                      }`}>{message.text}</p>
                     </div>
                   )}
 
-                  {/* ЗАКАЗ КНОПКАСЫ - 100% ИШТЕЙТ */}
                   <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={handleSubmitOrder}
@@ -831,20 +696,14 @@ function LithophanyConstructor() {
                     className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed text-sm active:scale-95 transition-all"
                   >
                     {loading ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        Отправка...
-                      </>
+                      <><Loader2 className="w-5 h-5 animate-spin" /> Отправка...</>
                     ) : (
-                      <>
-                        <ShoppingCart className="w-5 h-5" />
-                        📩 Заказать через WhatsApp
-                      </>
+                      <><Send className="w-5 h-5" /> 📩 Заказать через WhatsApp</>
                     )}
                   </motion.button>
 
                   <p className="text-xs text-gray-500 text-center">
-                    * После отправки автоматически откроется WhatsApp
+                    * Откроется WhatsApp. Фото отправьте отдельно в чат.
                   </p>
                 </div>
               )}
@@ -853,13 +712,10 @@ function LithophanyConstructor() {
         )}
       </AnimatePresence>
 
-      {/* Оверлей */}
       <AnimatePresence>
         {showPanel && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={() => setShowPanel(false)}
             className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           />
