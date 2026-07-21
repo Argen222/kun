@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, RotateCw, Sun, Moon, Camera, ShoppingCart, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, Send, Sparkles } from 'lucide-react';
+import { X, RotateCw, Sun, Moon, Camera, ShoppingCart, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, Send } from 'lucide-react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -28,8 +28,8 @@ function LithophanyLamp({
 
   const R = 1.3;
   const H = 5.0;
-  // ДАГЫ ылдый түшүрүлдү
-  const DEFAULT_CAM = new THREE.Vector3(0, -0.2, 9.5);
+  // Кичине ылдый түшүрүлдү
+  const DEFAULT_CAM = new THREE.Vector3(0, 0.3, 9.5);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -63,8 +63,8 @@ function LithophanyLamp({
     controls.dampingFactor = 0.08;
     controls.minDistance = 4;
     controls.maxDistance = 14;
-    // Фокус дагы ылдый
-    controls.target.set(0, -0.6, 0);
+    // Фокус кичине ылдый
+    controls.target.set(0, -0.2, 0);
     controls.autoRotate = true;
     controls.autoRotateSpeed = 1.4;
     controls.maxPolarAngle = Math.PI * 0.92;
@@ -216,8 +216,8 @@ function LithophanyLamp({
     });
     
     const cylinder = new THREE.Mesh(cylGeo, litoMaterial);
-    // Дагы ылдый
-    cylinder.position.y = -0.9;
+    // Лампа кичине ылдый
+    cylinder.position.y = -0.5;
     group.add(cylinder);
     materialRef.current = litoMaterial;
 
@@ -227,7 +227,7 @@ function LithophanyLamp({
       side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false
     });
     const glowCyl = new THREE.Mesh(glowGeo, glowMat);
-    glowCyl.position.y = -0.9;
+    glowCyl.position.y = -0.5;
     group.add(glowCyl);
 
     const baseMat = new THREE.MeshStandardMaterial({ color: 0x1b1d22, roughness: 0.5, metalness: 0.3 });
@@ -236,8 +236,8 @@ function LithophanyLamp({
     const CAP_H = 0.18;
     const CAP_R = R + 0.07 + 0.03;
     const CAP_OVERLAP = 0.06;
-    // Дагы ылдый
-    const Y_OFFSET = -0.9;
+    // Кичине ылдый
+    const Y_OFFSET = -0.5;
 
     const base = new THREE.Mesh(new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64), baseMat);
     base.position.y = -H / 2 + CAP_OVERLAP - CAP_H / 2 + Y_OFFSET;
@@ -371,7 +371,7 @@ function LithophanyLamp({
   const handleResetCamera = useCallback(() => {
     if (cameraRef.current && controlsRef.current) {
       cameraRef.current.position.copy(DEFAULT_CAM);
-      controlsRef.current.target.set(0, -0.6, 0);
+      controlsRef.current.target.set(0, -0.2, 0);
       controlsRef.current.update();
     }
   }, []);
@@ -380,7 +380,7 @@ function LithophanyLamp({
 
   return (
     <div ref={containerRef} className="w-full rounded-2xl overflow-hidden shadow-2xl"
-      style={{ aspectRatio: '1/1', maxHeight: 'calc(100vh - 280px)', minHeight: '280px' }} />
+      style={{ aspectRatio: '1/1', maxHeight: 'calc(100vh - 280px)', minHeight: '300px' }} />
   );
 }
 
@@ -475,23 +475,10 @@ function LithophanyConstructor() {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       
-      {/* 3D Сцена + Текст + Настройкалар */}
+      {/* 3D Сцена + Настройкалар */}
       <div className="flex-1 flex flex-col pt-2 sm:pt-4">
-        
-        {/* ========== ТЕКСТ ҮСТҮНДӨ ========== */}
-        <div className="text-center px-4 pb-2">
-          <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center justify-center gap-2">
-            <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
-            Создайте свою уникальную лампу
-          </h2>
-          <p className="text-sm text-gray-400 mt-1">
-            Загрузите фото, настройте яркость и сделайте заказ
-          </p>
-        </div>
-
-        {/* 3D лампа */}
         <div className="flex-1 p-2 sm:p-4 flex items-center justify-center">
-          <div className="w-full max-w-[420px] sm:max-w-[500px]">
+          <div className="w-full max-w-[450px] sm:max-w-[550px]">
             <LithophanyLamp
               uploadedImage1={uploadedImage1}
               uploadedImage2={uploadedImage2}
@@ -506,7 +493,7 @@ function LithophanyConstructor() {
         </div>
 
         {/* Башкаруу баскычтары */}
-        <div className="px-3 sm:px-6 pb-4 space-y-3">
+        <div className="px-3 sm:px-6 pb-4 space-y-4">
           
           {/* 1-катар: Вкл/Выкл, Вращать, Сброс */}
           <div className="flex gap-2 justify-center flex-wrap">
@@ -574,7 +561,7 @@ function LithophanyConstructor() {
 
           {/* 3-катар: Фото + Заказ */}
           <div className="flex gap-2 justify-center flex-wrap max-w-2xl mx-auto w-full">
-            <label className="flex-1 min-w-[130px] max-w-[240px] p-3 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors text-center group">
+            <label className="flex-1 min-w-[140px] max-w-[250px] p-3 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors text-center group">
               <Camera className="w-4 h-4 mx-auto text-gray-500 group-hover:text-amber-400 transition mb-1" />
               <p className="text-xs text-gray-400 group-hover:text-gray-300">
                 {uploadedImage1 ? '✅ Фото 1' : '📸 Фото 1'}
@@ -582,7 +569,7 @@ function LithophanyConstructor() {
               <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 1)} />
             </label>
 
-            <label className="flex-1 min-w-[130px] max-w-[240px] p-3 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors text-center group">
+            <label className="flex-1 min-w-[140px] max-w-[250px] p-3 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors text-center group">
               <Camera className="w-4 h-4 mx-auto text-gray-500 group-hover:text-amber-400 transition mb-1" />
               <p className="text-xs text-gray-400 group-hover:text-gray-300">
                 {uploadedImage2 ? '✅ Фото 2' : '📸 Фото 2'}
@@ -591,7 +578,7 @@ function LithophanyConstructor() {
             </label>
 
             <button onClick={() => setShowOrderPanel(true)}
-              className="flex-1 min-w-[130px] max-w-[240px] p-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 transition-all">
+              className="flex-1 min-w-[140px] max-w-[250px] p-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 transition-all">
               <ShoppingCart className="w-4 h-4" />
               Заказать
             </button>
