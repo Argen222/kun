@@ -28,7 +28,8 @@ function LithophanyLamp({
 
   const R = 1.3;
   const H = 5.0;
-  const DEFAULT_CAM = new THREE.Vector3(0, 0.8, 9.5);
+  // Камера ДАГЫ ылдый
+  const DEFAULT_CAM = new THREE.Vector3(0, -0.3, 9.5);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -62,7 +63,8 @@ function LithophanyLamp({
     controls.dampingFactor = 0.08;
     controls.minDistance = 4;
     controls.maxDistance = 14;
-    controls.target.set(0, 0.3, 0);
+    // Фокус ДАГЫ ылдый
+    controls.target.set(0, -0.8, 0);
     controls.autoRotate = true;
     controls.autoRotateSpeed = 1.4;
     controls.maxPolarAngle = Math.PI * 0.92;
@@ -214,7 +216,8 @@ function LithophanyLamp({
     });
     
     const cylinder = new THREE.Mesh(cylGeo, litoMaterial);
-    cylinder.position.y = -0.3;
+    // Лампа ДАГЫ ылдый
+    cylinder.position.y = -1.0;
     group.add(cylinder);
     materialRef.current = litoMaterial;
 
@@ -224,7 +227,7 @@ function LithophanyLamp({
       side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false
     });
     const glowCyl = new THREE.Mesh(glowGeo, glowMat);
-    glowCyl.position.y = -0.3;
+    glowCyl.position.y = -1.0;
     group.add(glowCyl);
 
     const baseMat = new THREE.MeshStandardMaterial({ color: 0x1b1d22, roughness: 0.5, metalness: 0.3 });
@@ -233,7 +236,7 @@ function LithophanyLamp({
     const CAP_H = 0.18;
     const CAP_R = R + 0.07 + 0.03;
     const CAP_OVERLAP = 0.06;
-    const Y_OFFSET = -0.3;
+    const Y_OFFSET = -1.0;
 
     const base = new THREE.Mesh(new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64), baseMat);
     base.position.y = -H / 2 + CAP_OVERLAP - CAP_H / 2 + Y_OFFSET;
@@ -367,7 +370,7 @@ function LithophanyLamp({
   const handleResetCamera = useCallback(() => {
     if (cameraRef.current && controlsRef.current) {
       cameraRef.current.position.copy(DEFAULT_CAM);
-      controlsRef.current.target.set(0, 0.3, 0);
+      controlsRef.current.target.set(0, -0.8, 0);
       controlsRef.current.update();
     }
   }, []);
@@ -376,11 +379,11 @@ function LithophanyLamp({
 
   return (
     <div ref={containerRef} className="w-full rounded-2xl overflow-hidden shadow-2xl"
-      style={{ aspectRatio: '1/1', maxHeight: 'calc(100vh - 320px)', minHeight: '280px' }} />
+      style={{ aspectRatio: '1/1', maxHeight: 'calc(100vh - 280px)', minHeight: '300px' }} />
   );
 }
 
-// ========== Негизги Конструктор (Настройкалар СЫРТТА!) ==========
+// ========== Негизги Конструктор ==========
 function LithophanyConstructor() {
   const [uploadedImage1, setUploadedImage1] = useState(null);
   const [uploadedImage2, setUploadedImage2] = useState(null);
@@ -471,7 +474,7 @@ function LithophanyConstructor() {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       
-      {/* 3D Сцена + Настройкалар (БААРЫ БИРГЕ) */}
+      {/* 3D Сцена + Настройкалар */}
       <div className="flex-1 flex flex-col pt-2 sm:pt-4">
         <div className="flex-1 p-2 sm:p-4 flex items-center justify-center">
           <div className="w-full max-w-[450px] sm:max-w-[550px]">
@@ -488,7 +491,7 @@ function LithophanyConstructor() {
           </div>
         </div>
 
-        {/* ========== БАШКАРУУ БАСКЫЧТАРЫ ========== */}
+        {/* Башкаруу баскычтары */}
         <div className="px-3 sm:px-6 pb-4 space-y-4">
           
           {/* 1-катар: Вкл/Выкл, Вращать, Сброс */}
@@ -519,11 +522,10 @@ function LithophanyConstructor() {
             </button>
           </div>
 
-          {/* 2-катар: Жарыктык, Контраст, Жылуулук (СЫРТТА!) */}
+          {/* 2-катар: Настройкалар */}
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border border-gray-700/50 max-w-2xl mx-auto w-full">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               
-              {/* Яркость */}
               <div className="space-y-1.5">
                 <label className="flex justify-between text-[11px] sm:text-xs text-gray-400">
                   <span>☀️ Яркость</span>
@@ -534,7 +536,6 @@ function LithophanyConstructor() {
                   className="w-full h-1.5 bg-gray-700 rounded-full appearance-none accent-amber-500 cursor-pointer" />
               </div>
 
-              {/* Контраст */}
               <div className="space-y-1.5">
                 <label className="flex justify-between text-[11px] sm:text-xs text-gray-400">
                   <span>🎨 Контраст</span>
@@ -545,7 +546,6 @@ function LithophanyConstructor() {
                   className="w-full h-1.5 bg-gray-700 rounded-full appearance-none accent-amber-500 cursor-pointer" />
               </div>
 
-              {/* Теплота */}
               <div className="space-y-1.5">
                 <label className="flex justify-between text-[11px] sm:text-xs text-gray-400">
                   <span>🔥 Теплота</span>
@@ -558,7 +558,7 @@ function LithophanyConstructor() {
             </div>
           </div>
 
-          {/* 3-катар: Загрузить фото + Заказать */}
+          {/* 3-катар: Фото + Заказ */}
           <div className="flex gap-2 justify-center flex-wrap max-w-2xl mx-auto w-full">
             <label className="flex-1 min-w-[140px] max-w-[250px] p-3 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors text-center group">
               <Camera className="w-4 h-4 mx-auto text-gray-500 group-hover:text-amber-400 transition mb-1" />
@@ -585,7 +585,7 @@ function LithophanyConstructor() {
         </div>
       </div>
 
-      {/* ========== Заказ панели (мобилдик) ========== */}
+      {/* Заказ панели */}
       <AnimatePresence>
         {showOrderPanel && (
           <motion.div
