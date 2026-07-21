@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Upload, X, ChevronRight, RotateCw, Zap, Sun, Moon, Menu, Camera, Settings, ShoppingCart, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, Send } from 'lucide-react';
+import { X, RotateCw, Sun, Moon, Camera, Settings, ShoppingCart, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, Send, SlidersHorizontal } from 'lucide-react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -28,7 +28,7 @@ function LithophanyLamp({
 
   const R = 1.3;
   const H = 5.0;
-  const DEFAULT_CAM = new THREE.Vector3(0, 1.2, 9.5);
+  const DEFAULT_CAM = new THREE.Vector3(0, 0.8, 9.5); // Камера бир аз ылдый
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -62,7 +62,7 @@ function LithophanyLamp({
     controls.dampingFactor = 0.08;
     controls.minDistance = 4;
     controls.maxDistance = 14;
-    controls.target.set(0, 0.6, 0);
+    controls.target.set(0, 0.3, 0); // Фокус ылдый
     controls.autoRotate = true;
     controls.autoRotateSpeed = 1.4;
     controls.maxPolarAngle = Math.PI * 0.92;
@@ -214,20 +214,17 @@ function LithophanyLamp({
     });
     
     const cylinder = new THREE.Mesh(cylGeo, litoMaterial);
-    cylinder.position.y = 0.0;
+    cylinder.position.y = -0.3; // Лампаны ылдый жылдыруу
     group.add(cylinder);
     materialRef.current = litoMaterial;
 
     const glowGeo = new THREE.CylinderGeometry(R * 0.96, R * 0.96, H * 0.99, 64, 1, true);
     const glowMat = new THREE.MeshBasicMaterial({
-      color: 0xffe2b0,
-      transparent: true,
-      opacity: 0.0,
-      side: THREE.BackSide,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
+      color: 0xffe2b0, transparent: true, opacity: 0.0,
+      side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false
     });
     const glowCyl = new THREE.Mesh(glowGeo, glowMat);
+    glowCyl.position.y = -0.3;
     group.add(glowCyl);
 
     const baseMat = new THREE.MeshStandardMaterial({ color: 0x1b1d22, roughness: 0.5, metalness: 0.3 });
@@ -236,23 +233,24 @@ function LithophanyLamp({
     const CAP_H = 0.18;
     const CAP_R = R + 0.07 + 0.03;
     const CAP_OVERLAP = 0.06;
+    const Y_OFFSET = -0.3;
 
     const base = new THREE.Mesh(new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64), baseMat);
-    base.position.y = -H / 2 + CAP_OVERLAP - CAP_H / 2;
+    base.position.y = -H / 2 + CAP_OVERLAP - CAP_H / 2 + Y_OFFSET;
     group.add(base);
 
     const baseBottom = new THREE.Mesh(new THREE.CircleGeometry(CAP_R * 0.9, 48), grilleMat);
     baseBottom.rotation.x = Math.PI / 2;
-    baseBottom.position.y = -H / 2 + CAP_OVERLAP - CAP_H;
+    baseBottom.position.y = -H / 2 + CAP_OVERLAP - CAP_H + Y_OFFSET;
     group.add(baseBottom);
 
     const cap = new THREE.Mesh(new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64), baseMat);
-    cap.position.y = H / 2 - CAP_OVERLAP + CAP_H / 2;
+    cap.position.y = H / 2 - CAP_OVERLAP + CAP_H / 2 + Y_OFFSET;
     group.add(cap);
 
     const capTop = new THREE.Mesh(new THREE.CircleGeometry(CAP_R * 0.9, 48), grilleMat);
     capTop.rotation.x = -Math.PI / 2;
-    capTop.position.y = H / 2 - CAP_OVERLAP + CAP_H;
+    capTop.position.y = H / 2 - CAP_OVERLAP + CAP_H + Y_OFFSET;
     group.add(capTop);
 
     group.position.y = 0.55;
@@ -369,7 +367,7 @@ function LithophanyLamp({
   const handleResetCamera = useCallback(() => {
     if (cameraRef.current && controlsRef.current) {
       cameraRef.current.position.copy(DEFAULT_CAM);
-      controlsRef.current.target.set(0, 0.6, 0);
+      controlsRef.current.target.set(0, 0.3, 0);
       controlsRef.current.update();
     }
   }, []);
@@ -378,11 +376,11 @@ function LithophanyLamp({
 
   return (
     <div ref={containerRef} className="w-full rounded-2xl overflow-hidden shadow-2xl"
-      style={{ aspectRatio: '1/1', maxHeight: 'calc(100vh - 200px)', minHeight: '300px' }} />
+      style={{ aspectRatio: '1/1', maxHeight: 'calc(100vh - 250px)', minHeight: '280px' }} />
   );
 }
 
-// ========== Негизги Конструктор (WhatsApp ОҢДОЛДУ) ==========
+// ========== Негизги Конструктор (Настройкалар САКТАЛДЫ) ==========
 function LithophanyConstructor() {
   const [uploadedImage1, setUploadedImage1] = useState(null);
   const [uploadedImage2, setUploadedImage2] = useState(null);
@@ -419,9 +417,7 @@ function LithophanyConstructor() {
     }
   };
 
-  // ========== WhatsApp заказ – ТОЛУК ОҢДОЛДУ ==========
   const handleSubmitOrder = () => {
-    // Текшерүү
     if (!customerName.trim()) {
       setMessage({ type: "error", text: "❌ Введите ваше имя!" });
       return;
@@ -434,7 +430,6 @@ function LithophanyConstructor() {
     setLoading(true);
     setMessage({ type: "", text: "" });
 
-    // WhatsApp тексти
     const text = `🕯️ *НОВЫЙ ЗАКАЗ ЛИТОФАНИИ*\n\n` +
                  `👤 *Клиент:* ${customerName.trim()}\n` +
                  `📞 *Телефон:* ${phoneNumber.trim()}\n\n` +
@@ -448,10 +443,8 @@ function LithophanyConstructor() {
                  `📅 *Дата заказа:* ${new Date().toLocaleString('ru-RU')}\n\n` +
                  `⚠️ *ВАЖНО:* Отправьте фото ОТДЕЛЬНО в этот чат!`;
 
-    // WhatsApp URL
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 
-    // API'ге жөнөтүү (кошумча, иштебесе да WhatsApp ачылат)
     try {
       const formData = new FormData();
       formData.append("customer_name", customerName.trim());
@@ -466,25 +459,17 @@ function LithophanyConstructor() {
       fetch("https://kun-backend1.onrender.com/api/custom-orders/", {
         method: "POST",
         body: formData
-      }).then(response => {
-        if (response.ok) {
-          console.log("✅ Заказ сохранён на сервере");
-        }
-      }).catch(() => {
-        console.log("⚠️ Сервер недоступен, но WhatsApp откроется");
-      });
+      }).catch(() => console.log("⚠️ Сервер недоступен"));
     } catch (error) {
-      console.log("ℹ️ API error (не критично)");
+      console.log("ℹ️ API error");
     }
 
-    // WhatsApp АЧУУ
     setMessage({ type: "success", text: "✅ Открываем WhatsApp..." });
     
     setTimeout(() => {
       window.open(whatsappUrl, "_blank");
     }, 500);
 
-    // Тазалоо
     setTimeout(() => {
       setCustomerName("");
       setPhoneNumber("");
@@ -497,64 +482,58 @@ function LithophanyConstructor() {
     <div className="min-h-screen bg-gray-900 flex flex-col">
       
       {/* 3D Сцена */}
-      <div className="flex-1 flex flex-col">
-        <div className="flex-1 p-2 sm:p-4">
-          <LithophanyLamp
-            uploadedImage1={uploadedImage1}
-            uploadedImage2={uploadedImage2}
-            lightOn={lightOn}
-            brightness={brightness}
-            contrast={contrast}
-            warmth={warmth}
-            autoRotate={autoRotate}
-            onResetCamera={resetCameraRef}
-          />
+      <div className="flex-1 flex flex-col pt-4 sm:pt-8">
+        <div className="flex-1 p-2 sm:p-4 flex items-center justify-center">
+          <div className="w-full max-w-[500px] sm:max-w-[600px]">
+            <LithophanyLamp
+              uploadedImage1={uploadedImage1}
+              uploadedImage2={uploadedImage2}
+              lightOn={lightOn}
+              brightness={brightness}
+              contrast={contrast}
+              warmth={warmth}
+              autoRotate={autoRotate}
+              onResetCamera={resetCameraRef}
+            />
+          </div>
         </div>
 
         {/* Кнопки управления */}
-        <div className="px-4 pb-2 flex gap-2 justify-center flex-wrap">
-          <button
-            onClick={() => setLightOn(!lightOn)}
-            className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
+        <div className="px-4 pb-3 flex gap-2 justify-center flex-wrap">
+          <button onClick={() => setLightOn(!lightOn)}
+            className={`px-4 py-2.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
               lightOn 
                 ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' 
                 : 'bg-gray-800 text-gray-400 border border-gray-700'
-            }`}
-          >
-            {lightOn ? <Sun className="w-3.5 h-3.5 inline mr-1" /> : <Moon className="w-3.5 h-3.5 inline mr-1" />}
+            }`}>
+            {lightOn ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
             {lightOn ? 'Выкл' : 'Вкл'}
           </button>
           
-          <button
-            onClick={() => setAutoRotate(!autoRotate)}
-            className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${
+          <button onClick={() => setAutoRotate(!autoRotate)}
+            className={`px-4 py-2.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
               autoRotate 
                 ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
                 : 'bg-gray-800 text-gray-400 border border-gray-700'
-            }`}
-          >
-            <RotateCw className="w-3.5 h-3.5 inline mr-1" />
+            }`}>
+            <RotateCw className="w-3.5 h-3.5" />
             {autoRotate ? 'Стоп' : 'Вращать'}
           </button>
           
-          <button
-            onClick={() => resetCameraRef.current?.()}
-            className="px-4 py-2 rounded-full text-xs font-medium bg-gray-800 text-gray-300 border border-gray-700"
-          >
+          <button onClick={() => resetCameraRef.current?.()}
+            className="px-4 py-2.5 rounded-full text-xs font-medium bg-gray-800 text-gray-300 border border-gray-700 flex items-center gap-1.5">
             🎯 Сброс
           </button>
           
-          <button
-            onClick={() => setShowPanel(true)}
-            className="px-4 py-2 rounded-full text-xs font-medium bg-amber-600 text-white shadow-lg shadow-amber-500/20"
-          >
-            <Settings className="w-3.5 h-3.5 inline mr-1" />
+          <button onClick={() => setShowPanel(true)}
+            className="px-4 py-2.5 rounded-full text-xs font-medium bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
+            <SlidersHorizontal className="w-3.5 h-3.5" />
             Настройки
           </button>
         </div>
       </div>
 
-      {/* Мобильная панель */}
+      {/* Мобильная панель (Настройкалар сакталды!) */}
       <AnimatePresence>
         {showPanel && (
           <motion.div
@@ -562,18 +541,22 @@ function LithophanyConstructor() {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-xl border-t border-gray-800 rounded-t-3xl max-h-[85vh] overflow-y-auto"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-xl border-t border-gray-800 rounded-t-3xl max-h-[80vh] overflow-y-auto"
           >
             <div className="sticky top-0 bg-gray-900/95 backdrop-blur-xl pt-3 pb-2 px-4 z-10">
               <div className="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-3" />
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-white">Настройки лампы</h3>
-                <button onClick={() => setShowPanel(false)} className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center">
+                <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                  <SlidersHorizontal className="w-5 h-5 text-amber-400" />
+                  Настройки лампы
+                </h3>
+                <button onClick={() => setShowPanel(false)} className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition">
                   <X className="w-4 h-4 text-gray-400" />
                 </button>
               </div>
             </div>
 
+            {/* Табы */}
             <div className="px-4 pb-2">
               <div className="flex gap-2 bg-gray-800 rounded-xl p-1">
                 {[
@@ -583,9 +566,8 @@ function LithophanyConstructor() {
                 ].map(tab => (
                   <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                     className={`flex-1 py-2.5 rounded-lg text-xs font-medium transition-all flex items-center justify-center gap-1.5 ${
-                      activeTab === tab.id ? 'bg-amber-500 text-gray-900' : 'text-gray-400'
-                    }`}
-                  >
+                      activeTab === tab.id ? 'bg-amber-500 text-gray-900 shadow-lg shadow-amber-500/30' : 'text-gray-400 hover:text-white'
+                    }`}>
                     <tab.icon className="w-4 h-4" />
                     {tab.label}
                   </button>
@@ -600,10 +582,10 @@ function LithophanyConstructor() {
                 <div className="space-y-3">
                   <p className="text-sm text-gray-400">Загрузите 1 или 2 фото для разных сторон лампы</p>
                   
-                  <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors">
+                  <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors group">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
-                        <ImageIcon className="w-5 h-5 text-gray-500" />
+                      <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-amber-500/10 transition">
+                        <ImageIcon className="w-5 h-5 text-gray-500 group-hover:text-amber-400 transition" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-white truncate">{uploadedImage1 ? '✅ Фото 1 загружено' : '📸 Передняя сторона'}</p>
@@ -613,10 +595,10 @@ function LithophanyConstructor() {
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 1)} />
                   </label>
 
-                  <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors">
+                  <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors group">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center">
-                        <ImageIcon className="w-5 h-5 text-gray-500" />
+                      <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-amber-500/10 transition">
+                        <ImageIcon className="w-5 h-5 text-gray-500 group-hover:text-amber-400 transition" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-white truncate">{uploadedImage2 ? '✅ Фото 2 загружено' : '📸 Задняя сторона'}</p>
@@ -628,34 +610,50 @@ function LithophanyConstructor() {
                 </div>
               )}
 
-              {/* Таб: Настройки света */}
+              {/* Таб: Настройки света (САКТАЛДЫ!) */}
               {activeTab === 'settings' && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="flex justify-between text-sm text-gray-300 mb-2">
-                      ☀️ Яркость <span className="text-amber-400 font-mono">{brightness.toFixed(2)}</span>
-                    </label>
-                    <input type="range" min="0.5" max="3" step="0.01" value={brightness}
-                      onChange={(e) => setBrightness(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500" />
-                  </div>
+                <div className="space-y-5">
+                  <p className="text-sm text-gray-400">Настройте яркость, контраст и теплоту свечения</p>
+                  
+                  <div className="bg-gray-800/50 rounded-xl p-4 space-y-4">
+                    <div>
+                      <label className="flex justify-between text-sm text-gray-300 mb-2">
+                        <span className="flex items-center gap-2">☀️ Яркость</span>
+                        <span className="text-amber-400 font-mono text-xs bg-amber-500/10 px-2 py-0.5 rounded-full">{brightness.toFixed(2)}</span>
+                      </label>
+                      <input type="range" min="0.5" max="3" step="0.01" value={brightness}
+                        onChange={(e) => setBrightness(parseFloat(e.target.value))}
+                        className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500 cursor-pointer" />
+                      <div className="flex justify-between text-[10px] text-gray-500 mt-1">
+                        <span>Тускло</span><span>Ярко</span>
+                      </div>
+                    </div>
 
-                  <div>
-                    <label className="flex justify-between text-sm text-gray-300 mb-2">
-                      🎨 Контраст <span className="text-amber-400 font-mono">{contrast.toFixed(2)}</span>
-                    </label>
-                    <input type="range" min="0.3" max="1.5" step="0.01" value={contrast}
-                      onChange={(e) => setContrast(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500" />
-                  </div>
+                    <div>
+                      <label className="flex justify-between text-sm text-gray-300 mb-2">
+                        <span className="flex items-center gap-2">🎨 Контраст</span>
+                        <span className="text-amber-400 font-mono text-xs bg-amber-500/10 px-2 py-0.5 rounded-full">{contrast.toFixed(2)}</span>
+                      </label>
+                      <input type="range" min="0.3" max="1.5" step="0.01" value={contrast}
+                        onChange={(e) => setContrast(parseFloat(e.target.value))}
+                        className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500 cursor-pointer" />
+                      <div className="flex justify-between text-[10px] text-gray-500 mt-1">
+                        <span>Мягко</span><span>Чётко</span>
+                      </div>
+                    </div>
 
-                  <div>
-                    <label className="flex justify-between text-sm text-gray-300 mb-2">
-                      🔥 Теплота <span className="text-amber-400 font-mono">{warmth.toFixed(2)}</span>
-                    </label>
-                    <input type="range" min="0" max="1" step="0.01" value={warmth}
-                      onChange={(e) => setWarmth(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500" />
+                    <div>
+                      <label className="flex justify-between text-sm text-gray-300 mb-2">
+                        <span className="flex items-center gap-2">🔥 Теплота</span>
+                        <span className="text-amber-400 font-mono text-xs bg-amber-500/10 px-2 py-0.5 rounded-full">{warmth.toFixed(2)}</span>
+                      </label>
+                      <input type="range" min="0" max="1" step="0.01" value={warmth}
+                        onChange={(e) => setWarmth(parseFloat(e.target.value))}
+                        className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500 cursor-pointer" />
+                      <div className="flex justify-between text-[10px] text-gray-500 mt-1">
+                        <span>Холодный</span><span>Тёплый</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -667,14 +665,14 @@ function LithophanyConstructor() {
                   
                   <input placeholder="Ваше имя *" value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm" />
+                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm transition" />
                   
                   <input placeholder="Телефон: 0700 123 456 *" value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)} type="tel"
-                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm" />
+                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm transition" />
 
                   {message.text && (
-                    <div className={`p-4 rounded-xl flex items-center gap-3 ${
+                    <div className={`p-4 rounded-xl flex items-center gap-3 animate-in slide-in-from-bottom-2 ${
                       message.type === 'success' 
                         ? 'bg-green-500/10 border border-green-500/30' 
                         : 'bg-red-500/10 border border-red-500/30'
@@ -717,7 +715,7 @@ function LithophanyConstructor() {
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={() => setShowPanel(false)}
-            className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+            className="fixed inset-0 bg-black/50 z-40"
           />
         )}
       </AnimatePresence>
