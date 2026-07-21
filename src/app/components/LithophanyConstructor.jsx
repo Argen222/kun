@@ -28,8 +28,8 @@ function LithophanyLamp({
 
   const R = 1.3;
   const H = 5.0;
-  // Камера ДАГЫ ылдый
-  const DEFAULT_CAM = new THREE.Vector3(0, -0.3, 9.5);
+  // Кичине ылдый түшүрүлдү
+  const DEFAULT_CAM = new THREE.Vector3(0, 0.3, 9.5);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -63,8 +63,8 @@ function LithophanyLamp({
     controls.dampingFactor = 0.08;
     controls.minDistance = 4;
     controls.maxDistance = 14;
-    // Фокус ДАГЫ ылдый
-    controls.target.set(0, -0.8, 0);
+    // Фокус кичине ылдый
+    controls.target.set(0, -0.2, 0);
     controls.autoRotate = true;
     controls.autoRotateSpeed = 1.4;
     controls.maxPolarAngle = Math.PI * 0.92;
@@ -216,8 +216,8 @@ function LithophanyLamp({
     });
     
     const cylinder = new THREE.Mesh(cylGeo, litoMaterial);
-    // Лампа ДАГЫ ылдый
-    cylinder.position.y = -1.0;
+    // Лампа кичине ылдый
+    cylinder.position.y = -0.5;
     group.add(cylinder);
     materialRef.current = litoMaterial;
 
@@ -227,7 +227,7 @@ function LithophanyLamp({
       side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false
     });
     const glowCyl = new THREE.Mesh(glowGeo, glowMat);
-    glowCyl.position.y = -1.0;
+    glowCyl.position.y = -0.5;
     group.add(glowCyl);
 
     const baseMat = new THREE.MeshStandardMaterial({ color: 0x1b1d22, roughness: 0.5, metalness: 0.3 });
@@ -236,7 +236,8 @@ function LithophanyLamp({
     const CAP_H = 0.18;
     const CAP_R = R + 0.07 + 0.03;
     const CAP_OVERLAP = 0.06;
-    const Y_OFFSET = -1.0;
+    // Кичине ылдый
+    const Y_OFFSET = -0.5;
 
     const base = new THREE.Mesh(new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64), baseMat);
     base.position.y = -H / 2 + CAP_OVERLAP - CAP_H / 2 + Y_OFFSET;
@@ -370,7 +371,7 @@ function LithophanyLamp({
   const handleResetCamera = useCallback(() => {
     if (cameraRef.current && controlsRef.current) {
       cameraRef.current.position.copy(DEFAULT_CAM);
-      controlsRef.current.target.set(0, -0.8, 0);
+      controlsRef.current.target.set(0, -0.2, 0);
       controlsRef.current.update();
     }
   }, []);
