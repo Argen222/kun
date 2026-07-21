@@ -28,8 +28,8 @@ function LithophanyLamp({
 
   const R = 1.3;
   const H = 5.0;
-  // Кичине ылдый түшүрүлдү
-  const DEFAULT_CAM = new THREE.Vector3(0, 0.3, 9.5);
+  // Камера ДАГЫ ылдый
+  const DEFAULT_CAM = new THREE.Vector3(0, -0.3, 9.5);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -63,8 +63,8 @@ function LithophanyLamp({
     controls.dampingFactor = 0.08;
     controls.minDistance = 4;
     controls.maxDistance = 14;
-    // Фокус кичине ылдый
-    controls.target.set(0, -0.2, 0);
+    // Фокус ДАГЫ ылдый
+    controls.target.set(0, -0.8, 0);
     controls.autoRotate = true;
     controls.autoRotateSpeed = 1.4;
     controls.maxPolarAngle = Math.PI * 0.92;
@@ -216,8 +216,8 @@ function LithophanyLamp({
     });
     
     const cylinder = new THREE.Mesh(cylGeo, litoMaterial);
-    // Лампа кичине ылдый
-    cylinder.position.y = -0.5;
+    // Лампа ДАГЫ ылдый
+    cylinder.position.y = -1.0;
     group.add(cylinder);
     materialRef.current = litoMaterial;
 
@@ -227,7 +227,7 @@ function LithophanyLamp({
       side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false
     });
     const glowCyl = new THREE.Mesh(glowGeo, glowMat);
-    glowCyl.position.y = -0.5;
+    glowCyl.position.y = -1.0;
     group.add(glowCyl);
 
     const baseMat = new THREE.MeshStandardMaterial({ color: 0x1b1d22, roughness: 0.5, metalness: 0.3 });
@@ -236,8 +236,7 @@ function LithophanyLamp({
     const CAP_H = 0.18;
     const CAP_R = R + 0.07 + 0.03;
     const CAP_OVERLAP = 0.06;
-    // Кичине ылдый
-    const Y_OFFSET = -0.5;
+    const Y_OFFSET = -1.0;
 
     const base = new THREE.Mesh(new THREE.CylinderGeometry(CAP_R, CAP_R, CAP_H, 64), baseMat);
     base.position.y = -H / 2 + CAP_OVERLAP - CAP_H / 2 + Y_OFFSET;
@@ -371,7 +370,7 @@ function LithophanyLamp({
   const handleResetCamera = useCallback(() => {
     if (cameraRef.current && controlsRef.current) {
       cameraRef.current.position.copy(DEFAULT_CAM);
-      controlsRef.current.target.set(0, -0.2, 0);
+      controlsRef.current.target.set(0, -0.8, 0);
       controlsRef.current.update();
     }
   }, []);
@@ -476,7 +475,7 @@ function LithophanyConstructor() {
     <div className="min-h-screen bg-gray-900 flex flex-col">
       
       {/* 3D Сцена + Настройкалар */}
- <div className="flex-1 flex flex-col pt-8 sm:pt-10">
+      <div className="flex-1 flex flex-col pt-2 sm:pt-4">
         <div className="flex-1 p-2 sm:p-4 flex items-center justify-center">
           <div className="w-full max-w-[450px] sm:max-w-[550px]">
             <LithophanyLamp
