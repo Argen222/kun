@@ -476,7 +476,7 @@ function LithophanyConstructor() {
     <div className="min-h-screen bg-gray-900 flex flex-col">
       
       {/* 3D Сцена + Настройкалар */}
-    <div className="flex-1 flex flex-col pt-20 sm:pt-24">
+ <div className="flex-1 flex flex-col pt-8 sm:pt-10">
         <div className="flex-1 p-2 sm:p-4 flex items-center justify-center">
           <div className="w-full max-w-[450px] sm:max-w-[550px]">
             <LithophanyLamp
