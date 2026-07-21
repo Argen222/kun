@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, RotateCw, Sun, Moon, Camera, Settings, ShoppingCart, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, Send, SlidersHorizontal } from 'lucide-react';
+import { X, RotateCw, Sun, Moon, Camera, ShoppingCart, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle, Send } from 'lucide-react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -28,7 +28,7 @@ function LithophanyLamp({
 
   const R = 1.3;
   const H = 5.0;
-  const DEFAULT_CAM = new THREE.Vector3(0, 0.8, 9.5); // Камера бир аз ылдый
+  const DEFAULT_CAM = new THREE.Vector3(0, 0.8, 9.5);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -62,7 +62,7 @@ function LithophanyLamp({
     controls.dampingFactor = 0.08;
     controls.minDistance = 4;
     controls.maxDistance = 14;
-    controls.target.set(0, 0.3, 0); // Фокус ылдый
+    controls.target.set(0, 0.3, 0);
     controls.autoRotate = true;
     controls.autoRotateSpeed = 1.4;
     controls.maxPolarAngle = Math.PI * 0.92;
@@ -214,7 +214,7 @@ function LithophanyLamp({
     });
     
     const cylinder = new THREE.Mesh(cylGeo, litoMaterial);
-    cylinder.position.y = -0.3; // Лампаны ылдый жылдыруу
+    cylinder.position.y = -0.3;
     group.add(cylinder);
     materialRef.current = litoMaterial;
 
@@ -376,11 +376,11 @@ function LithophanyLamp({
 
   return (
     <div ref={containerRef} className="w-full rounded-2xl overflow-hidden shadow-2xl"
-      style={{ aspectRatio: '1/1', maxHeight: 'calc(100vh - 250px)', minHeight: '280px' }} />
+      style={{ aspectRatio: '1/1', maxHeight: 'calc(100vh - 320px)', minHeight: '280px' }} />
   );
 }
 
-// ========== Негизги Конструктор (Настройкалар САКТАЛДЫ) ==========
+// ========== Негизги Конструктор (Настройкалар СЫРТТА!) ==========
 function LithophanyConstructor() {
   const [uploadedImage1, setUploadedImage1] = useState(null);
   const [uploadedImage2, setUploadedImage2] = useState(null);
@@ -395,8 +395,7 @@ function LithophanyConstructor() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
-  const [showPanel, setShowPanel] = useState(false);
-  const [activeTab, setActiveTab] = useState('upload');
+  const [showOrderPanel, setShowOrderPanel] = useState(false);
   
   const resetCameraRef = useRef(null);
 
@@ -433,15 +432,15 @@ function LithophanyConstructor() {
     const text = `🕯️ *НОВЫЙ ЗАКАЗ ЛИТОФАНИИ*\n\n` +
                  `👤 *Клиент:* ${customerName.trim()}\n` +
                  `📞 *Телефон:* ${phoneNumber.trim()}\n\n` +
-                 `📸 *Фото 1 (перед):* ${imageFile1 ? '✅ Загружено (' + (imageFile1.size / 1024).toFixed(1) + ' KB)' : '❌ Не загружено'}\n` +
-                 `📸 *Фото 2 (зад):* ${imageFile2 ? '✅ Загружено (' + (imageFile2.size / 1024).toFixed(1) + ' KB)' : '❌ Не загружено'}\n\n` +
-                 `💡 *Свет:* ${lightOn ? 'Включен ✓' : 'Выключен ✗'}\n` +
+                 `📸 *Фото 1 (перед):* ${imageFile1 ? '✅ Загружено' : '❌ Не загружено'}\n` +
+                 `📸 *Фото 2 (зад):* ${imageFile2 ? '✅ Загружено' : '❌ Не загружено'}\n\n` +
+                 `💡 *Свет:* ${lightOn ? 'Включен' : 'Выключен'}\n` +
                  `☀️ *Яркость:* ${brightness.toFixed(1)}\n` +
                  `🎨 *Контраст:* ${contrast.toFixed(2)}\n` +
                  `🔥 *Теплота:* ${warmth.toFixed(2)}\n` +
                  `🔄 *Автоповорот:* ${autoRotate ? 'Да' : 'Нет'}\n\n` +
-                 `📅 *Дата заказа:* ${new Date().toLocaleString('ru-RU')}\n\n` +
-                 `⚠️ *ВАЖНО:* Отправьте фото ОТДЕЛЬНО в этот чат!`;
+                 `📅 *Дата:* ${new Date().toLocaleString('ru-RU')}\n\n` +
+                 `⚠️ Отправьте фото в этот чат!`;
 
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 
@@ -449,42 +448,33 @@ function LithophanyConstructor() {
       const formData = new FormData();
       formData.append("customer_name", customerName.trim());
       formData.append("phone_number", phoneNumber.trim());
-      formData.append("light_on", lightOn);
-      formData.append("brightness", brightness);
-      formData.append("contrast", contrast);
-      formData.append("warmth", warmth);
       if (imageFile1) formData.append("image_front", imageFile1);
       if (imageFile2) formData.append("image_back", imageFile2);
-
       fetch("https://kun-backend1.onrender.com/api/custom-orders/", {
-        method: "POST",
-        body: formData
-      }).catch(() => console.log("⚠️ Сервер недоступен"));
-    } catch (error) {
-      console.log("ℹ️ API error");
-    }
+        method: "POST", body: formData
+      }).catch(() => {});
+    } catch (error) {}
 
     setMessage({ type: "success", text: "✅ Открываем WhatsApp..." });
     
-    setTimeout(() => {
-      window.open(whatsappUrl, "_blank");
-    }, 500);
+    setTimeout(() => window.open(whatsappUrl, "_blank"), 500);
 
     setTimeout(() => {
       setCustomerName("");
       setPhoneNumber("");
       setLoading(false);
       setMessage({ type: "", text: "" });
+      setShowOrderPanel(false);
     }, 2500);
   };
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       
-      {/* 3D Сцена */}
-      <div className="flex-1 flex flex-col pt-4 sm:pt-8">
+      {/* 3D Сцена + Настройкалар (БААРЫ БИРГЕ) */}
+      <div className="flex-1 flex flex-col pt-2 sm:pt-4">
         <div className="flex-1 p-2 sm:p-4 flex items-center justify-center">
-          <div className="w-full max-w-[500px] sm:max-w-[600px]">
+          <div className="w-full max-w-[450px] sm:max-w-[550px]">
             <LithophanyLamp
               uploadedImage1={uploadedImage1}
               uploadedImage2={uploadedImage2}
@@ -498,223 +488,174 @@ function LithophanyConstructor() {
           </div>
         </div>
 
-        {/* Кнопки управления */}
-        <div className="px-4 pb-3 flex gap-2 justify-center flex-wrap">
-          <button onClick={() => setLightOn(!lightOn)}
-            className={`px-4 py-2.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
-              lightOn 
-                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' 
-                : 'bg-gray-800 text-gray-400 border border-gray-700'
-            }`}>
-            {lightOn ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-            {lightOn ? 'Выкл' : 'Вкл'}
-          </button>
+        {/* ========== БАШКАРУУ БАСКЫЧТАРЫ ========== */}
+        <div className="px-3 sm:px-6 pb-4 space-y-4">
           
-          <button onClick={() => setAutoRotate(!autoRotate)}
-            className={`px-4 py-2.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
-              autoRotate 
-                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
-                : 'bg-gray-800 text-gray-400 border border-gray-700'
-            }`}>
-            <RotateCw className="w-3.5 h-3.5" />
-            {autoRotate ? 'Стоп' : 'Вращать'}
-          </button>
-          
-          <button onClick={() => resetCameraRef.current?.()}
-            className="px-4 py-2.5 rounded-full text-xs font-medium bg-gray-800 text-gray-300 border border-gray-700 flex items-center gap-1.5">
-            🎯 Сброс
-          </button>
-          
-          <button onClick={() => setShowPanel(true)}
-            className="px-4 py-2.5 rounded-full text-xs font-medium bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
-            <SlidersHorizontal className="w-3.5 h-3.5" />
-            Настройки
-          </button>
+          {/* 1-катар: Вкл/Выкл, Вращать, Сброс */}
+          <div className="flex gap-2 justify-center flex-wrap">
+            <button onClick={() => setLightOn(!lightOn)}
+              className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+                lightOn 
+                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' 
+                  : 'bg-gray-800 text-gray-400 border border-gray-700'
+              }`}>
+              {lightOn ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+              {lightOn ? 'Выкл свет' : 'Вкл свет'}
+            </button>
+            
+            <button onClick={() => setAutoRotate(!autoRotate)}
+              className={`px-4 py-2 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+                autoRotate 
+                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' 
+                  : 'bg-gray-800 text-gray-400 border border-gray-700'
+              }`}>
+              <RotateCw className={`w-3.5 h-3.5 ${autoRotate ? 'animate-spin' : ''}`} />
+              {autoRotate ? 'Стоп' : 'Вращать'}
+            </button>
+            
+            <button onClick={() => resetCameraRef.current?.()}
+              className="px-4 py-2 rounded-full text-xs font-medium bg-gray-800 text-gray-300 border border-gray-700 flex items-center gap-1.5 hover:bg-gray-700 transition">
+              🎯 Сброс
+            </button>
+          </div>
+
+          {/* 2-катар: Жарыктык, Контраст, Жылуулук (СЫРТТА!) */}
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-3 sm:p-4 border border-gray-700/50 max-w-2xl mx-auto w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              
+              {/* Яркость */}
+              <div className="space-y-1.5">
+                <label className="flex justify-between text-[11px] sm:text-xs text-gray-400">
+                  <span>☀️ Яркость</span>
+                  <span className="text-amber-400 font-mono">{brightness.toFixed(1)}</span>
+                </label>
+                <input type="range" min="0.5" max="3" step="0.1" value={brightness}
+                  onChange={(e) => setBrightness(parseFloat(e.target.value))}
+                  className="w-full h-1.5 bg-gray-700 rounded-full appearance-none accent-amber-500 cursor-pointer" />
+              </div>
+
+              {/* Контраст */}
+              <div className="space-y-1.5">
+                <label className="flex justify-between text-[11px] sm:text-xs text-gray-400">
+                  <span>🎨 Контраст</span>
+                  <span className="text-amber-400 font-mono">{contrast.toFixed(2)}</span>
+                </label>
+                <input type="range" min="0.3" max="1.5" step="0.01" value={contrast}
+                  onChange={(e) => setContrast(parseFloat(e.target.value))}
+                  className="w-full h-1.5 bg-gray-700 rounded-full appearance-none accent-amber-500 cursor-pointer" />
+              </div>
+
+              {/* Теплота */}
+              <div className="space-y-1.5">
+                <label className="flex justify-between text-[11px] sm:text-xs text-gray-400">
+                  <span>🔥 Теплота</span>
+                  <span className="text-amber-400 font-mono">{warmth.toFixed(2)}</span>
+                </label>
+                <input type="range" min="0" max="1" step="0.01" value={warmth}
+                  onChange={(e) => setWarmth(parseFloat(e.target.value))}
+                  className="w-full h-1.5 bg-gray-700 rounded-full appearance-none accent-amber-500 cursor-pointer" />
+              </div>
+            </div>
+          </div>
+
+          {/* 3-катар: Загрузить фото + Заказать */}
+          <div className="flex gap-2 justify-center flex-wrap max-w-2xl mx-auto w-full">
+            <label className="flex-1 min-w-[140px] max-w-[250px] p-3 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors text-center group">
+              <Camera className="w-4 h-4 mx-auto text-gray-500 group-hover:text-amber-400 transition mb-1" />
+              <p className="text-xs text-gray-400 group-hover:text-gray-300">
+                {uploadedImage1 ? '✅ Фото 1' : '📸 Фото 1'}
+              </p>
+              <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 1)} />
+            </label>
+
+            <label className="flex-1 min-w-[140px] max-w-[250px] p-3 border-2 border-dashed border-gray-600 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors text-center group">
+              <Camera className="w-4 h-4 mx-auto text-gray-500 group-hover:text-amber-400 transition mb-1" />
+              <p className="text-xs text-gray-400 group-hover:text-gray-300">
+                {uploadedImage2 ? '✅ Фото 2' : '📸 Фото 2'}
+              </p>
+              <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 2)} />
+            </label>
+
+            <button onClick={() => setShowOrderPanel(true)}
+              className="flex-1 min-w-[140px] max-w-[250px] p-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 transition-all">
+              <ShoppingCart className="w-4 h-4" />
+              Заказать
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Мобильная панель (Настройкалар сакталды!) */}
+      {/* ========== Заказ панели (мобилдик) ========== */}
       <AnimatePresence>
-        {showPanel && (
+        {showOrderPanel && (
           <motion.div
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-xl border-t border-gray-800 rounded-t-3xl max-h-[80vh] overflow-y-auto"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-xl border-t border-gray-800 rounded-t-3xl"
           >
-            <div className="sticky top-0 bg-gray-900/95 backdrop-blur-xl pt-3 pb-2 px-4 z-10">
+            <div className="pt-3 pb-2 px-4">
               <div className="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-3" />
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <SlidersHorizontal className="w-5 h-5 text-amber-400" />
-                  Настройки лампы
-                </h3>
-                <button onClick={() => setShowPanel(false)} className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-white">📋 Оформление заказа</h3>
+                <button onClick={() => setShowOrderPanel(false)} className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center">
                   <X className="w-4 h-4 text-gray-400" />
                 </button>
               </div>
-            </div>
 
-            {/* Табы */}
-            <div className="px-4 pb-2">
-              <div className="flex gap-2 bg-gray-800 rounded-xl p-1">
-                {[
-                  { id: 'upload', icon: Camera, label: 'Фото' },
-                  { id: 'settings', icon: Settings, label: 'Свет' },
-                  { id: 'order', icon: ShoppingCart, label: 'Заказ' },
-                ].map(tab => (
-                  <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                    className={`flex-1 py-2.5 rounded-lg text-xs font-medium transition-all flex items-center justify-center gap-1.5 ${
-                      activeTab === tab.id ? 'bg-amber-500 text-gray-900 shadow-lg shadow-amber-500/30' : 'text-gray-400 hover:text-white'
-                    }`}>
-                    <tab.icon className="w-4 h-4" />
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+              <div className="space-y-3 pb-6">
+                <input placeholder="Ваше имя *" value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm" />
+                
+                <input placeholder="Телефон: 0700 123 456 *" value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)} type="tel"
+                  className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm" />
 
-            <div className="px-4 pb-8 space-y-4">
-              
-              {/* Таб: Загрузка фото */}
-              {activeTab === 'upload' && (
-                <div className="space-y-3">
-                  <p className="text-sm text-gray-400">Загрузите 1 или 2 фото для разных сторон лампы</p>
-                  
-                  <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-amber-500/10 transition">
-                        <ImageIcon className="w-5 h-5 text-gray-500 group-hover:text-amber-400 transition" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-white truncate">{uploadedImage1 ? '✅ Фото 1 загружено' : '📸 Передняя сторона'}</p>
-                        <p className="text-xs text-gray-500">Нажмите, чтобы выбрать</p>
-                      </div>
-                    </div>
-                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 1)} />
-                  </label>
-
-                  <label className="block p-4 border-2 border-dashed border-gray-700 rounded-xl cursor-pointer hover:border-amber-500/50 transition-colors group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center group-hover:bg-amber-500/10 transition">
-                        <ImageIcon className="w-5 h-5 text-gray-500 group-hover:text-amber-400 transition" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-white truncate">{uploadedImage2 ? '✅ Фото 2 загружено' : '📸 Задняя сторона'}</p>
-                        <p className="text-xs text-gray-500">Нажмите, чтобы выбрать</p>
-                      </div>
-                    </div>
-                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, 2)} />
-                  </label>
-                </div>
-              )}
-
-              {/* Таб: Настройки света (САКТАЛДЫ!) */}
-              {activeTab === 'settings' && (
-                <div className="space-y-5">
-                  <p className="text-sm text-gray-400">Настройте яркость, контраст и теплоту свечения</p>
-                  
-                  <div className="bg-gray-800/50 rounded-xl p-4 space-y-4">
-                    <div>
-                      <label className="flex justify-between text-sm text-gray-300 mb-2">
-                        <span className="flex items-center gap-2">☀️ Яркость</span>
-                        <span className="text-amber-400 font-mono text-xs bg-amber-500/10 px-2 py-0.5 rounded-full">{brightness.toFixed(2)}</span>
-                      </label>
-                      <input type="range" min="0.5" max="3" step="0.01" value={brightness}
-                        onChange={(e) => setBrightness(parseFloat(e.target.value))}
-                        className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500 cursor-pointer" />
-                      <div className="flex justify-between text-[10px] text-gray-500 mt-1">
-                        <span>Тускло</span><span>Ярко</span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="flex justify-between text-sm text-gray-300 mb-2">
-                        <span className="flex items-center gap-2">🎨 Контраст</span>
-                        <span className="text-amber-400 font-mono text-xs bg-amber-500/10 px-2 py-0.5 rounded-full">{contrast.toFixed(2)}</span>
-                      </label>
-                      <input type="range" min="0.3" max="1.5" step="0.01" value={contrast}
-                        onChange={(e) => setContrast(parseFloat(e.target.value))}
-                        className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500 cursor-pointer" />
-                      <div className="flex justify-between text-[10px] text-gray-500 mt-1">
-                        <span>Мягко</span><span>Чётко</span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="flex justify-between text-sm text-gray-300 mb-2">
-                        <span className="flex items-center gap-2">🔥 Теплота</span>
-                        <span className="text-amber-400 font-mono text-xs bg-amber-500/10 px-2 py-0.5 rounded-full">{warmth.toFixed(2)}</span>
-                      </label>
-                      <input type="range" min="0" max="1" step="0.01" value={warmth}
-                        onChange={(e) => setWarmth(parseFloat(e.target.value))}
-                        className="w-full h-2 bg-gray-700 rounded-full appearance-none accent-amber-500 cursor-pointer" />
-                      <div className="flex justify-between text-[10px] text-gray-500 mt-1">
-                        <span>Холодный</span><span>Тёплый</span>
-                      </div>
-                    </div>
+                {message.text && (
+                  <div className={`p-3 rounded-xl flex items-center gap-2 ${
+                    message.type === 'success' 
+                      ? 'bg-green-500/10 border border-green-500/30' 
+                      : 'bg-red-500/10 border border-red-500/30'
+                  }`}>
+                    {message.type === 'success' 
+                      ? <CheckCircle2 className="w-4 h-4 text-green-400" />
+                      : <AlertCircle className="w-4 h-4 text-red-400" />
+                    }
+                    <p className={`text-xs font-medium ${
+                      message.type === 'success' ? 'text-green-400' : 'text-red-400'
+                    }`}>{message.text}</p>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Таб: Заказ */}
-              {activeTab === 'order' && (
-                <div className="space-y-3">
-                  <p className="text-sm text-gray-400">Заполните данные для оформления заказа</p>
-                  
-                  <input placeholder="Ваше имя *" value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm transition" />
-                  
-                  <input placeholder="Телефон: 0700 123 456 *" value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)} type="tel"
-                    className="w-full p-3.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:border-amber-500 outline-none text-sm transition" />
-
-                  {message.text && (
-                    <div className={`p-4 rounded-xl flex items-center gap-3 animate-in slide-in-from-bottom-2 ${
-                      message.type === 'success' 
-                        ? 'bg-green-500/10 border border-green-500/30' 
-                        : 'bg-red-500/10 border border-red-500/30'
-                    }`}>
-                      {message.type === 'success' 
-                        ? <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
-                        : <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                      }
-                      <p className={`text-sm font-medium ${
-                        message.type === 'success' ? 'text-green-400' : 'text-red-400'
-                      }`}>{message.text}</p>
-                    </div>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleSubmitOrder}
+                  disabled={loading}
+                  className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-50 text-sm"
+                >
+                  {loading ? (
+                    <><Loader2 className="w-5 h-5 animate-spin" /> Отправка...</>
+                  ) : (
+                    <><Send className="w-5 h-5" /> 📩 Заказать через WhatsApp</>
                   )}
+                </motion.button>
 
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleSubmitOrder}
-                    disabled={loading}
-                    className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-gray-900 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed text-sm active:scale-95 transition-all"
-                  >
-                    {loading ? (
-                      <><Loader2 className="w-5 h-5 animate-spin" /> Отправка...</>
-                    ) : (
-                      <><Send className="w-5 h-5" /> 📩 Заказать через WhatsApp</>
-                    )}
-                  </motion.button>
-
-                  <p className="text-xs text-gray-500 text-center">
-                    * Откроется WhatsApp. Фото отправьте отдельно в чат.
-                  </p>
-                </div>
-              )}
+                <p className="text-xs text-gray-500 text-center">
+                  * Откроется WhatsApp. Фото отправьте отдельно в чат.
+                </p>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showPanel && (
+        {showOrderPanel && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={() => setShowPanel(false)}
+            onClick={() => setShowOrderPanel(false)}
             className="fixed inset-0 bg-black/50 z-40"
           />
         )}
