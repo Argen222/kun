@@ -160,7 +160,7 @@ function ReviewsPage() {
         >
           <h1 className="text-4xl sm:text-5xl font-bold">
             <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-              Отзывы клиентов
+              Отзывы клиента Арген
             </span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
