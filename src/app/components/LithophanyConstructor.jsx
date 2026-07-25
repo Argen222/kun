@@ -256,12 +256,12 @@ function LithophanyLamp({
     capTop.position.y = H / 2 - CAP_OVERLAP + CAP_H + Y_OFFSET;
     group.add(capTop);
 
-    group.position.y = 0.55;
+    group.position.y = 1.0;
 
     const floorMat = new THREE.MeshStandardMaterial({ color: 0x16181d, roughness: 0.85, metalness: 0.1 });
     const floor = new THREE.Mesh(new THREE.CircleGeometry(40, 64), floorMat);
     floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -H / 2 + group.position.y - 0.44;
+    floor.position.y = -H / 2 + group.position.y - 1.0;
     scene.add(floor);
 
     const poolMat = new THREE.MeshBasicMaterial({
