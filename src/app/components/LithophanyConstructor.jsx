@@ -261,7 +261,7 @@ function LithophanyLamp({
     const floorMat = new THREE.MeshStandardMaterial({ color: 0x16181d, roughness: 0.85, metalness: 0.1 });
     const floor = new THREE.Mesh(new THREE.CircleGeometry(40, 64), floorMat);
     floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -H / 2 + group.position.y - 1.2;
+    floor.position.y = -H / 2 + group.position.y - 1.4;
     scene.add(floor);
 
     const poolMat = new THREE.MeshBasicMaterial({
