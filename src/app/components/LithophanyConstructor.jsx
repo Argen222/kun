@@ -256,7 +256,7 @@ function LithophanyLamp({
     capTop.position.y = H / 2 - CAP_OVERLAP + CAP_H + Y_OFFSET;
     group.add(capTop);
 
-    group.position.y = 2.2;
+    group.position.y = 0.8;
 
     const floorMat = new THREE.MeshStandardMaterial({ color: 0x16181d, roughness: 0.85, metalness: 0.1 });
     const floor = new THREE.Mesh(new THREE.CircleGeometry(40, 64), floorMat);
