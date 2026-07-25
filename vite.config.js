@@ -4,6 +4,9 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
+
 function figmaAssetResolver() {
   return {
     name: 'figma-asset-resolver',
@@ -18,11 +21,7 @@ function figmaAssetResolver() {
 
 export default defineConfig({
   base: './',  // <-- МУНУ КОШУҢУЗ (бул стилдердин туура жолду табуусуна жардам берет)
-  plugins: [
-    figmaAssetResolver(),
-    react(),
-    tailwindcss(),
-  ],
+  plugins: [figmaAssetResolver(), react(), tailwindcss(), cloudflare()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
