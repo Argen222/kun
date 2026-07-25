@@ -29,7 +29,7 @@ function LithophanyLamp({
   const R = 1.3;
   const H = 5.0;
   // Камера ДАГЫ ылдый
-  const DEFAULT_CAM = new THREE.Vector3(0, -0.3, 9.5);
+  const DEFAULT_CAM = new THREE.Vector3(0, -0.3, 15.0);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -62,7 +62,7 @@ function LithophanyLamp({
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
     controls.minDistance = 4;
-    controls.maxDistance = 14;
+    controls.maxDistance = 25;
     // Фокус ДАГЫ ылдый
     controls.target.set(0, -0.8, 0);
     controls.autoRotate = true;
