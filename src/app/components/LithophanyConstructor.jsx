@@ -390,9 +390,9 @@ function LithophanyConstructor() {
   const [imageFile1, setImageFile1] = useState(null);
   const [imageFile2, setImageFile2] = useState(null);
   const [lightOn, setLightOn] = useState(true);
-  const [brightness, setBrightness] = useState(1.83);
-  const [contrast, setContrast] = useState(0.78);
-  const [warmth, setWarmth] = useState(0.5);
+  const [brightness, setBrightness] = useState(1.6);
+  const [contrast, setContrast] = useState(1.0);
+  const [warmth, setWarmth] = useState(0.60);
   const [autoRotate, setAutoRotate] = useState(true);
   const [customerName, setCustomerName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
